@@ -1,0 +1,23 @@
+{
+  "name": "our-amazing-game",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/erinkayb/our-amazing-game.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/erinkayb/our-amazing-game/issues"
+  },
+  "homepage": "https://github.com/erinkayb/our-amazing-game#readme",
+  "dependencies": {
+    "express": "^4.16.4",
+    "socket.io": "^2.1.1"
+  }
+}
