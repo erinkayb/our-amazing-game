@@ -11,9 +11,10 @@ var render = Render.create({
     element: document.body,
     engine: engine ,
     options:{
-        width: 768,
-        height: 640,
+        width: window.innerWidth,
+        height: window.innerHeight,
          wireframes: false,
+         hasBounds:true,
          //background:'/maxresdefault.jpg',
 
       }
@@ -23,6 +24,11 @@ context.font = "30px Arial";
 context.fillStyle = "white";
 context.textAlign = "center";
 
+let WIDTH  =768//logic
+let HEIGHT =640
+
+//render.options.style.width = CANVAS_WIDTH
+//render.options.style.height = CANVAS_HEIGHT
 
 let cactuses=[]
 let score = 0
@@ -41,7 +47,7 @@ ourWorld.gravity.scale=0
 //
 let lastTime=0
 const player = new Player()
-
+//Render.lookAt(render,player.b)
 document.addEventListener('keydown', (event) => {
   event.preventDefault()
 	if (event.keyCode==83) {
@@ -104,11 +110,18 @@ function reset(){
 
 			lastTime=t
 		}
-		Body.setAngularVelocity(dino, 0)
-		context.fillStyle = "white";
-		context.fillText('hello', 250, 80);
+    Render.lookAt(render, player, {x: WIDTH,y: HEIGHT});
 
+		Body.setAngularVelocity(dino, 0)
+    context.save()
+		context.fillStyle = "white";
+		context.fillText((player.x,player.y), 250, 80);
+
+    context.translate(player.x,player.y)
+
+    console.log(player.x,player.y);
     player.update()
+    context.restore()
 
     Engine.update(engine, 1000 / 60);
 			window.requestAnimationFrame(run);

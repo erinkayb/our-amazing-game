@@ -6,7 +6,7 @@ class Player{
     this.speed=5
     this.dirX=0
     this.dirY=0
-    this.b = Bodies.rectangle(x, y, 32, 32)
+    this.b = Bodies.rectangle(x, y, 64, 64)
     this.b.label="player"
     World.add(ourWorld, this.b);
   }
@@ -42,7 +42,8 @@ class Player{
   }
   update(){
 
-
+    this.x = this.b.position.x
+      this.y = this.b.position.y
     Body.setAngularVelocity(this.b, 0)
     this.move()
 
