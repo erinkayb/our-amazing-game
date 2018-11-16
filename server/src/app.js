@@ -10,9 +10,9 @@ app.use(morgan('combined')) //prints logs
 app.use(bodyParser.json())
 app.use(cors()) //server to host on a different domain
 
-app.get('/status', (req, res) => {
+app.post('/register', (req, res) => {
   res.send({
-    message: "HelloWorld"
+    message: `Hello ${req.body.email}`
   })
 })
 

@@ -4,6 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
+    "start": "nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -17,7 +18,11 @@
   },
   "homepage": "https://github.com/erinkayb/our-amazing-game#readme",
   "dependencies": {
+    "axios": "^0.18.0",
     "express": "^4.16.4",
-    "socket.io": "^2.1.1"
+    "nodemon": "^1.18.6",
+    "socket.io": "^2.1.1",
+    "vue": "^2.5.17",
+    "vue-router": "^3.0.1"
   }
 }
