@@ -30,7 +30,7 @@
 
             <div class="error" v-html="error"></div>
             <v-btn class='elevation-8 blue-grey darken-3' dark
-              @click="login">
+              @click="login" to="loggedin">
               Login
             </v-btn>
           </div>
@@ -59,6 +59,9 @@ export default {
         })
         this.$store.dispatch('setToken', response.data.token)
         this.$store.dispatch('setUser', response.data.user)
+        // this.$router.push({
+        //   name: 'loginlanding'
+        // })
       } catch (error) {
         this.error = error.response.data.error
       }
