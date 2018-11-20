@@ -11,9 +11,10 @@ var render = Render.create({
     element: document.body,
     engine: engine ,
     options:{
-        width: 768,
-        height: 640,
+        width: window.innerWidth,
+        height: window.innerHeight,
          wireframes: false,
+         hasBounds:true,
          //background:'/maxresdefault.jpg',
 
       }
@@ -23,15 +24,34 @@ context.font = "30px Arial";
 context.fillStyle = "white";
 context.textAlign = "center";
 
+let WIDTH  =768//logic
+let HEIGHT =640
+let worldWidth=3072
+let worldHeight =3072
+let windowWidth = render.options.width
+let windowHeight = render.options.height
+//render.options.style.width = CANVAS_WIDTH
+//render.options.style.height = CANVAS_HEIGHT
 
-let cactuses=[]
+var defaultCategory = 0x0001,
+       redCategory = 0x0002,
+       greenCategory = 0x0004,
+       blueCategory = 0x0008;
+
 let score = 0
 var dino = Bodies.rectangle(50, 500, 20, 40)
 dino.label="dino"
 
 var ground = Bodies.rectangle(400, 610, 810, 60, { isStatic: true })
+
+var borderTop = Bodies.rectangle(0, 0, 3072, 60, { isStatic: true })
+var borderLeft = Bodies.rectangle(-1536, 1536, 60, 3072, { isStatic: true })
+var borderRight = Bodies.rectangle(1536, 1536, 60, 3072, { isStatic: true })
+var borderBottom = Bodies.rectangle(0, 3072, 3072, 60, { isStatic: true })
+
+
 // add all of the bodies to the world
-World.add(ourWorld, [dino,ground]);
+World.add(ourWorld, [dino,ground,borderTop,borderLeft,borderRight,borderBottom]);
 // run the engine
 Engine.run(engine);
 // run the renderer
@@ -42,6 +62,11 @@ ourWorld.gravity.scale=0
 let lastTime=0
 const player = new Player()
 
+
+render.canvas.addEventListener('click',(event)=>{
+    player.shoot(event)
+
+})
 document.addEventListener('keydown', (event) => {
   event.preventDefault()
 	if (event.keyCode==83) {
@@ -77,25 +102,18 @@ Matter.Events.on(engine, 'collisionStart', function(event) {
 
 		let pairs =event.pairs
 		pairs.forEach(pair =>{
-			if (pair.bodyA.label === 'dino'|| pair.bodyB.label==='dino') {
-
-				if (pair.bodyA.label === 'cactus'|| pair.bodyB.label==='cactus') {
-					reset()
-
-				}
-
+			if (pair.bodyA.label === 'bullet') {
+            pair.bodyA.label='stop'
+      }
+			if (pair.bodyB.label==='bullet') {
+          pair.bodyB.label='stop'
 			}
 		})
 
 
 });
 function reset(){
-	//	World.remove(ourWorld, cactuses[i].cactus)
-//		cactuses.splice(i,1)
-
 	score =0
-
-
 }
 
 (function run(t) {
@@ -104,9 +122,12 @@ function reset(){
 
 			lastTime=t
 		}
-		Body.setAngularVelocity(dino, 0)
-		context.fillStyle = "white";
-		context.fillText('hello', 250, 80);
+    Render.lookAt(render, player.pos, {x: WIDTH,y: HEIGHT});//player needs a .x and .y
+
+
+		// context.fillStyle = "white";
+		// context.fillText('x:y:', windowWidth/2, windowHeight/2);
+    // context.fillRect(windowWidth/2, windowHeight/2,10,10)
 
     player.update()
 
