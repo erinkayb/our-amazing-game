@@ -9,7 +9,7 @@ class Bullet{
     let norm = Math.sqrt(this.dir.x * this.dir.x + this.dir.y * this.dir.y)
     this.dir.x = (this.dir.x/norm)*0.07
     this.dir.y = (this.dir.y/norm)*0.07
-    this.b = Bodies.circle(this.pos.x, this.pos.y, 14 , {collisionFilter: {category: redCategory}})
+    this.b = Bodies.circle(this.pos.x, this.pos.y, 14 , {collisionFilter: {category: redCategory}, restitution:0.5})
     this.b.label="bullet"
     World.add(ourWorld, this.b);
     Body.applyForce( this.b,this.pos, this.dir);

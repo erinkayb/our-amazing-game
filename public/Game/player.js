@@ -51,12 +51,20 @@ class Player{
   updateBullets(){
     for (var i = this.bullets.length-1; i >=0; i--) {
       if (this.bullets[i].b.label==='stop') {
-        World.remove(ourWorld,this.bullets[i].b)
 
-        this.bullets.splice(i,1)
+            //this.deleteBullet(this.bullets[i].b,i)
+             World.remove(ourWorld,this.bullets[i].b)
+             this.bullets.splice(i,1)
 
       }
     }
+  }
+  deleteBullet(b,index){
+    // setTimeout(function(){
+      //World.remove(ourWorld,b)
+      //player.bullets.splice(index,1)
+
+    // }, 100);
   }
   update(){
 
