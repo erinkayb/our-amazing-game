@@ -3,12 +3,73 @@
   <head>
     <meta charset="utf-8">
     <script type="text/javascript" src="matter.js"></script>
-
+    <!---Howler library and sounds--->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.0.4/howler.core.min.js"></script>
+    <stript type="text/javascript" src="/Audio/audio.js"></stript>
+    
     <title>Our Awesome Game</title>
   </head>
   <body>
     <script type="text/javascript" src="player.js"></script>
     <script type="text/javascript" src="main.js"></script>
+
+ 	  <button id="fs1">Foot Step 1</button>
+    <button id="song">song</button>
+    <button id="fs2">Foort Step 2</button>
+
+    <script>
+      var allowed = true;
+      //sounds
+      var playerFootstep = new Howl({
+        volume: 0.5,
+        loop: true,
+        rate: 2,
+        src: ['playerFootstep1.mp3']
+      });
+
+      var playerFootstep2 = new Howl({
+        volume: 0.3,
+        src: ['playerFootstep2.mp3']
+      });
+
+      var song = new Howl({
+        volume: 0.2,
+        src: ['Audio/bgMusic.mp3']
+      });
+
+      //on_action
+      document.getElementById('fs1').onclick=function(){playerFootstep.play();}
+      document.getElementById('fs2').onclick=function(){playerFootstep2.play();}
+      document.getElementById('song').onclick=function(){song.play();}
+
+
+      document.addEventListener('keydown', (event) => {
+         //event.preventDefault()
+         if (event.repeat != undefined) {
+          allowed = !event.repeat;
+         }
+         if (!allowed) return;
+         allowed = false;
+          if (event.keyCode==83) {
+             playerFootstep.play();
+          }
+          if (event.keyCode==65) {
+              playerFootstep.play();
+            }
+          if (event.keyCode==87) {
+              playerFootstep.play();
+            }
+          if (event.keyCode==68) {
+              playerFootstep.play();
+            }
+          });
+
+      document.addEventListener('keyup', (event) => {
+          playerFootstep.stop()
+      });
+      
+    </script>
+
 
   </body>
 </html>
