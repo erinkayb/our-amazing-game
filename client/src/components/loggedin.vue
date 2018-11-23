@@ -9,11 +9,11 @@
             </v-toolbar-title>
           </v-toolbar>
           <div class='pl-4 pr-4 pt-4 pb-4'>
-            <v-flex>
+            <v-flex v-for="u in users":key="u.name">
+              {{u.name}}
 
             </v-flex>
-
-        </div>
+          </div>
         </div>
       </v-flex>
       <v-flex xs6>
@@ -29,8 +29,7 @@
                 <v-btn round block large class="orange darken-3" dark>Enter Game</v-btn>
               </div>
             </v-flex>
-
-        </div>
+          </div>
         </div>
       </v-flex>
     </v-layout>
@@ -38,6 +37,18 @@
 </template>
 
 <script>
+import userservice from '@/services/userservice'
+export default {
+  data () {
+    return {
+      users: []
+    }
+  },
+  async mounted () {
+    this.users.push( (await userservice.index()).data)
+    console.log("users:",this.users);
+  }
+}
 </script>
 
 <style scoped>

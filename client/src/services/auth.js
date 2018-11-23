@@ -6,5 +6,8 @@ export default {
   },
   login (credentials) {
     return api().post('login', credentials)
-  }
+  },
+  index () {
+    return api().get('loggedin')
+  },
 }
