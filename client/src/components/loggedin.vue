@@ -3,22 +3,24 @@
     <v-layout row wrap>
       <v-flex xs6>
         <div class="white elevation-24">
-          <v-toolbar flat dense class='blue-grey darken-3' dark>
-            <v-toolbar-title>
-              Welcome
-            </v-toolbar-title>
+          <v-toolbar flat dense class='light-green accent-4' dark>
+              <v-toolbar-title>
+                <v-flex v-for="u in users":key="u.name">
+                  Welcome, {{u.name}}!
+                </v-flex>
+              </v-toolbar-title>
+            </v-toolbar>
+            <div class='pl-4 pr-4 pt-4 pb-4'>
+              <v-flex>
+                Your stats? Maybe.... I don't know
+              </v-flex>
+            </div>
           </v-toolbar>
-          <div class='pl-4 pr-4 pt-4 pb-4'>
-            <v-flex v-for="u in users":key="u.name">
-              {{u.name}}
-
-            </v-flex>
           </div>
-        </div>
       </v-flex>
       <v-flex xs6>
         <div class="white elevation-24">
-          <v-toolbar flat dense class='blue-grey darken-3' dark>
+          <v-toolbar flat dense class='light-green accent-4' dark>
             <v-toolbar-title>
               Ready to play?
             </v-toolbar-title>
@@ -32,6 +34,33 @@
           </div>
         </div>
       </v-flex>
+<!-- Ads -->
+      <v-flex xs4 mt-5 justify-space-around>
+            <div class='pl-4 pr-4 pt-4 pb-4'>
+                <v-img
+                  src="https://res.cloudinary.com/erinkayb/image/upload/v1542988856/Screen_Shot_2018-11-23_at_17.00.43.png"
+                  aspect-ratio="1.75"
+                ></v-img>
+            </div>
+      </v-flex>
+      <v-flex xs4 mt-5>
+            <div class='pl-4 pr-4 pt-4 pb-4'>
+                <v-img
+                  src="https://res.cloudinary.com/erinkayb/image/upload/v1542988710/ad.png"
+
+                ></v-img>
+            </div>
+      </v-flex>
+      <v-flex xs4 mt-5>
+            <div class='pl-4 pr-4 pt-4 pb-4'>
+                <v-img
+                  src="https://res.cloudinary.com/erinkayb/image/upload/v1542988710/ad.png"
+
+                ></v-img>
+            </div>
+      </v-flex>
+
+<!-- - -->
     </v-layout>
   </v-container>
 </template>
@@ -52,4 +81,7 @@ export default {
 </script>
 
 <style scoped>
+.green{
+  color: white;
+}
 </style>
