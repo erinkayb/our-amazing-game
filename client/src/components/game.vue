@@ -2,33 +2,31 @@
 
 </template>
 
-
-<script type="text/javascript" src="Game/matter.js"></script>
-<script type="text/javascript" src="Game/bullet.js"></script>
-<script type="text/javascript" src="Game/player.js"></script>
-<script type="text/javascript" src="Game/main.js"></script>
-
 <script>
-import matter from '@/components/Game/matter.js'
-import bullet from '@/components/Game/bullet.js'
-import player from '@/components/Game/player.js'
-import game from '@/components/Game/main.js'
-export default {
-  name: 'game',
-  components: {
-      matter,
-      bullet,
-      player,
-      game,
-  }
-}
+//import {Jam} from '../assets/Game/main.js'
+// export default {
+//   name:'GameJam',
+//   components: {
+//     Jam
+//   }
+// }
+
 </script>
 
-<style lang="css">
+
+
+<style scoped>
 body{
   padding:0px;
   padding-bottom:0px;
   margin:0px;
   margin-bottom:0px;
+
+}
+.navHeader {
+  visibility: hidden;
+}
+#app {
+  visibility: hidden;
 }
 </style>

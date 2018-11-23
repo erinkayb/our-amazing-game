@@ -1,9 +1,9 @@
-import Bullet from './bullet'
-export default class Player{
-
-  constructor(x=100,y=100,bodies,body,world,ourworld,cat){
+//import Bullet from './bullet.js'
+class Player{
+  constructor(x=100,y=100,bodies,body,world,ourworld,cat,id){
     this.pos={x:x,y:y}
     this.speed=5
+    this.id=id
     this.dirX=0
     this.dirY=0
     this.bulletDirectionX=0

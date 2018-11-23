@@ -1,9 +1,9 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import HelloWorld from '@/components/HelloWorld'
-import register from '@/components/register'
-import Login from '@/components/Login'
-import game from '@/components/game'
+// import HelloWorld from '@/components/HelloWorld'
+// import register from '@/components/register'
+// import Login from '@/components/Login'
+//import game from '@/components/game'
 
 
 Vue.use(Router)
@@ -13,22 +13,22 @@ export default new Router({
     {
       path: '/',
       name: 'home',
-      component: HelloWorld
+      component: ()=>import('@/components/HelloWorld')
     },
     {
       path: '/register',
       name: 'register',
-      component: register
+      component: ()=>import('@/components/register')
     },
     {
       path: '/login',
       name: 'login',
-      component: Login
+      component: ()=>import('@/components/Login')
     },
     {
       path: '/game',
       name: 'game',
-      component: game
+      component: ()=>import('@/components/game.vue')
     }
   ]
 })

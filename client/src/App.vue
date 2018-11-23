@@ -1,9 +1,10 @@
 <template>
   <div id="app">
     <v-app>
-      <nav-header/>
+      <nav-header class="navHeader"></nav-header>
       <main>
         <v-container fluid>
+        
           <router-view/>
         </v-container>
       </main>
@@ -12,6 +13,7 @@
 </template>
 
 <script>
+
 import NavHeader from '@/components/Header.vue'
 export default {
   name: 'App',
@@ -22,9 +24,6 @@ export default {
 </script>
 
 <style>
-body{
-  background-color: #263238;
-}
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;

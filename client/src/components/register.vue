@@ -74,5 +74,11 @@ export default {
 }
 </script>
 
-<style lang="css">
+<style >
+.jaime {
+  visibility: hidden;
+}
+#hello{
+    display: none;
+}
 </style>

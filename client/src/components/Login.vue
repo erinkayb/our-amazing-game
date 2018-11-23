@@ -67,5 +67,8 @@ export default {
 }
 </script>
 
-<style lang="css">
+<style scoped>
+.jaime {
+  visibility: hidden;
+}
 </style>
