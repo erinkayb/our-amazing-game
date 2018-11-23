@@ -1,86 +1,52 @@
 <template>
-  <div class="hello">
-    <h1>{{ msg }}</h1>
-    <h2>Essential Links</h2>
-    <ul>
-      <li>
-        <a
-          href="https://vuejs.org"
-          target="_blank"
-        >
-          Core Docs
-        </a>
-      </li>
-      <li>
-        <a
-          href="https://forum.vuejs.org"
-          target="_blank"
-        >
-          Forum
-        </a>
-      </li>
-      <li>
-        <a
-          href="https://chat.vuejs.org"
-          target="_blank"
-        >
-          Community Chat
-        </a>
-      </li>
-      <li>
-        <a
-          href="https://twitter.com/vuejs"
-          target="_blank"
-        >
-          Twitter
-        </a>
-      </li>
-      <br>
-      <li>
-        <a
-          href="http://vuejs-templates.github.io/webpack/"
-          target="_blank"
-        >
-          Docs for This Template
-        </a>
-      </li>
-    </ul>
-    <h2>Ecosystem</h2>
-    <ul>
-      <li>
-        <a
-          href="http://router.vuejs.org/"
-          target="_blank"
-        >
-          vue-router
-        </a>
-      </li>
-      <li>
-        <a
-          href="http://vuex.vuejs.org/"
-          target="_blank"
-        >
-          vuex
-        </a>
-      </li>
-      <li>
-        <a
-          href="http://vue-loader.vuejs.org/"
-          target="_blank"
-        >
-          vue-loader
-        </a>
-      </li>
-      <li>
-        <a
-          href="https://github.com/vuejs/awesome-vue"
-          target="_blank"
-        >
-          awesome-vue
-        </a>
-      </li>
-    </ul>
-  </div>
+  <v-container grid-list-xl text-md-center>
+    <v-layout row wrap>
+      <v-flex sm12>
+        <div class="white elevation-24">
+          <v-toolbar flat dense class=' light-green accent-4' dark>
+            <v-toolbar-title>
+              Welcome to our world
+            </v-toolbar-title>
+          </v-toolbar>
+          <div class='pl-4 pr-4 pt-4 pb-4'>
+            <v-flex>
+              <div class="text-xs-center">
+                <v-btn round block large class="orange darken-3" dark>Register</v-btn>
+                <v-btn round block large class="orange darken-3" dark>Login</v-btn>
+              </div>
+            </v-flex>
+          </div>
+        </div>
+      </v-flex>
+<!-- Ads -->
+      <v-flex xs4 mt-5 justify-space-around>
+            <div class='pl-4 pr-4 pt-4 pb-4'>
+                <v-img
+                  src="https://res.cloudinary.com/erinkayb/image/upload/v1542988856/Screen_Shot_2018-11-23_at_17.00.43.png"
+                  aspect-ratio="1.75"
+                ></v-img>
+            </div>
+      </v-flex>
+      <v-flex xs4 mt-5>
+            <div class='pl-4 pr-4 pt-4 pb-4'>
+                <v-img
+                  src="https://res.cloudinary.com/erinkayb/image/upload/v1542988710/ad.png"
+
+                ></v-img>
+            </div>
+      </v-flex>
+      <v-flex xs4 mt-5>
+            <div class='pl-4 pr-4 pt-4 pb-4'>
+                <v-img
+                  src="https://res.cloudinary.com/erinkayb/image/upload/v1542988710/ad.png"
+
+                ></v-img>
+            </div>
+      </v-flex>
+
+<!-- - -->
+    </v-layout>
+  </v-container>
 </template>
 
 <script>
