@@ -5,6 +5,7 @@ class Bullet{
     constructor(pos,dir){
       this.pos=pos//spawnPoint, player pos in world
       this.centre={x:windowWidth/2,y:windowHeight/2}//playerPos in screen not world
+      //this.click={x:100, y:100}
       this.click={x:dir.x,y:dir.y}//where we want to bullet to go
       this.dir= Matter.Vector.sub( this.click,this.centre)
       let norm = Math.sqrt(this.dir.x * this.dir.x + this.dir.y * this.dir.y)

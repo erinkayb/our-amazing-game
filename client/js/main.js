@@ -67,26 +67,66 @@
   Render.run(render);
   //disabeling gravity
   ourWorld.gravity.scale=0
+
+
+  //-------AUDIO-------
+  document.addEventListener('DOMContentLoaded', function(){
+      //song.play();
+    }, false)
+  //player shoot
+  const laser = new Howl({
+      volume: 0.5,
+      src: ['./js/laser.mp3']
+    });
+  //player spawn
+   const spawn = new Howl({
+    volume: 0.5,
+    src: ['./js/spawn.mp3']
+   })
+  //player dead
+  const dead = new Howl({
+    volume: 0.8,
+    src: ['./js/killed.mp3']
+   })
+  //client connects
+  const connect = new Howl({
+    volume: 0.6,
+    src: ['./js/connect.mp3']
+   })
+  //client disconnect
+  const disconnect = new Howl({
+    volume: 0.6,
+    src: ['./js/disconnect.mp3']
+   })
+  //background song
+  const song = new Howl({
+      volume: 0.1,
+      src: ['./js/song_compressed.mp3'],
+   })
+
+  //players on client
   let socket = io();
   let players=[]
-  socket.emit('happy',{
-    reason:'its working'
-  })
+  // socket.emit('happy',{
+  //   reason:'it is working'
+  // })
   socket.on('currentPlayers',(data)=>{
     console.log(data);
   })
   socket.on('newPosition',(pack)=>{
       updatePlayers(pack)
   })
-  socket.on('deletePlayer',(id)=>{
+  socket.on('disconnect',(id)=>{
 
+      console.log(players.id[1])
       deletePlayer(id)
-      console.log(id)
+      console.log(`disconnecting: ${id}`)
   })
 
   socket.on('newPlayer',(id)=>{
     addNewPlayer(id.id)
     console.log(id.id);
+    connect.play()
   })
   function addNewPlayer(id){
     players.push(new Player(800,300,Bodies,Body,World,ourWorld,defaultCategory,id))
@@ -98,6 +138,7 @@
       pack.forEach(pac=>{
         if (pac.id==p.id) {
           ///player can be updated here
+          console.log(`saysomething`)
 
         }
 
@@ -117,15 +158,36 @@
       }
 
   }
-
   let lastTime=0
   const player = new Player(800,300,Bodies,Body,World,ourWorld,defaultCategory)
 
+  //change click event to execute on mouse down
+  // let mouseDownID = -1
 
-  render.canvas.addEventListener('click',(event)=>{
+  // let mouseDown = (event) => {
+  //   if (mouseDownID == -1)                              //prevents multiple loops
+  //     mouseDownID = setInterval(whileMouseDown, 100)    //runs whileMouseDown() every 100ms
+  // }
+
+  // let mouseUp = (event) => {
+  //   if (mouseDownID = -1)
+  //     clearInterval(mouseDownID)
+  //     mouseDownID = -1
+  // }
+
+  // let whileMouseDown = (event) => {
+  //    player.shoot(event)
+  // }
+
+  // document.addEventListener('mouseDown', mouseDown)
+  // document.addEventListener('mouseUp', mouseUp)
+  // document.addEventListener('mouseout', mouseUp)
+
+   render.canvas.addEventListener('click', (event) => {
       player.shoot(event)
-
-  })
+      laser.play()
+    })
+  
   document.addEventListener('keydown', (event) => {
     event.preventDefault()
   	if (event.keyCode==83) {
@@ -164,6 +226,11 @@
        socket.emit('keyPress',{inputId:'right',state:false})
     }
   });
+
+  //outputs playermovement to server
+  // setInterval(() => {
+  //   socket.emit('playerMovement', playerMovement);
+  // }, 1000 / 60)
 
   Matter.Events.on(engine, 'collisionStart', function(event) {
 

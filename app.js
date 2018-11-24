@@ -3,14 +3,18 @@ const app = express()
 const port = 3000
 const serv= require('http').Server(app)
 let io = require('socket.io')(serv)
+let howler = require('howler')
 
 app.use(express.static(__dirname + '/client'))
 app.get('/', (req, response) => {
       response.sendFile(__dirname + '/index.html')
 })
 
+//store sockets
 let SOCKET_LIST={}
+//store players
 let PLAYER_LIST ={}
+
 let Player =(id)=>{
   let self={
     x:120,
@@ -39,10 +43,11 @@ let Player =(id)=>{
   return self
 }
 io.sockets.on('connection', (socket)=>{
-  console.log(`connected ${socket.id}`)
-  socket.on('happy',(data)=>{
-    console.log(`happy ${data.reason}`);
-  });
+  let sessionID = socket.id
+  console.log(`client connected ${socket.id}`)
+  // socket.on('happy',(data)=>{
+  //   console.log(`happy ${data.reason}`);
+  // });
 
   SOCKET_LIST[socket.id]=socket
   let player = Player(socket.id)
@@ -64,17 +69,19 @@ io.sockets.on('connection', (socket)=>{
   socket.broadcast.emit('newPlayer',PLAYER_LIST[socket.id])
 
   socket.on('disconnect',(socket)=>{
-    console.log(`disconnected: `, socket.id);
+    console.log(`----client disconnected---- `);
     //remove player from players object
-    io.emit('deletePlayer',socket.id)
-    console.log(SOCKET_LIST[socket.id]);
+    //////////////////////////io.emit('deletePlayer',socket.id)
+    //console.log(SOCKET_LIST[socket.id]); //"UNDEFINED"
+    //tell clientes that playerID has disconnected
+    io.emit('disconnect', socket.id)
 
     delete SOCKET_LIST[socket.id]
     delete PLAYER_LIST[socket.id]
-    //tell clientes that playerID has disconnected
-    io.emit('disconnect', socket.id)
   })
 })
+
+//update server state to clients
 setInterval(()=>{
   let pack =[]
   for (var i in PLAYER_LIST) {
@@ -92,4 +99,5 @@ setInterval(()=>{
   }
 
 },1000/25)
+
 serv.listen(port, () => console.log(`listening on port ${port}!`))
