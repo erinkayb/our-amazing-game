@@ -69,97 +69,104 @@
   ourWorld.gravity.scale=0
 
 
-  //-------AUDIO-------
-  document.addEventListener('DOMContentLoaded', function(){
-      //song.play();
-    }, false)
-  //player shoot
-  const laser = new Howl({
-      volume: 0.5,
-      src: ['./js/laser.mp3']
-    });
-  //player spawn
-   const spawn = new Howl({
-    volume: 0.5,
-    src: ['./js/spawn.mp3']
-   })
-  //player dead
-  const dead = new Howl({
-    volume: 0.8,
-    src: ['./js/killed.mp3']
-   })
-  //client connects
-  const connect = new Howl({
-    volume: 0.6,
-    src: ['./js/connect.mp3']
-   })
-  //client disconnect
-  const disconnect = new Howl({
-    volume: 0.6,
-    src: ['./js/disconnect.mp3']
-   })
-  //background song
-  const song = new Howl({
-      volume: 0.1,
-      src: ['./js/song_compressed.mp3'],
-   })
+  // //-------AUDIO-------
+  // document.addEventListener('DOMContentLoaded', function(){
+  //     //song.play();
+  //   }, false)
+  // //player shoot
+  // const laser = new Howl({
+  //     volume: 0.5,
+  //     src: ['./js/laser.mp3']
+  //   });
+  // //player spawn
+  //  const spawn = new Howl({
+  //   volume: 0.5,
+  //   src: ['./js/spawn.mp3']
+  //  })
+  // //player dead
+  // const dead = new Howl({
+  //   volume: 0.8,
+  //   src: ['./js/killed.mp3']
+  //  })
+  // //client connects
+  // const connect = new Howl({
+  //   volume: 0.6,
+  //   src: ['./js/connect.mp3']
+  //  })
+  // //client disconnect
+  // const disconnect = new Howl({
+  //   volume: 0.6,
+  //   src: ['./js/disconnect.mp3']
+  //  })
+  // //background song
+  // const song = new Howl({
+  //     volume: 0.1,
+  //     src: ['./js/song_compressed.mp3'],
+  //  })
 
   //players on client
   let socket = io();
   let players=[]
+  //const player = new Player(800,300,Bodies,Body,World,ourWorld,defaultCategory)
+  //console.log('socket',socket.id);
+  let player =new Player(800,300,Bodies,Body,World,ourWorld,defaultCategory,socket.id)
+
+
   // socket.emit('happy',{
   //   reason:'it is working'
   // })
   socket.on('currentPlayers',(data)=>{
-    console.log(data);
+//console.log('player:',player.id);
+console.log('currentPlayers');
+  player.id=data.id
+    for (var p in data.players) {
+      if (data.players[p].id!==player.id) {
+        //console.log(data[p].id);
+        //console.log(player.id);
+        addNewPlayer(data.players[p].id,data.players[p].x,data.players[p].y)
+    }
+  }
+
   })
   socket.on('newPosition',(pack)=>{
       updatePlayers(pack)
   })
   socket.on('disconnect',(id)=>{
 
-      console.log(players.id[1])
       deletePlayer(id)
       console.log(`disconnecting: ${id}`)
   })
 
   socket.on('newPlayer',(id)=>{
-    addNewPlayer(id.id)
-    console.log(id.id);
-    connect.play()
+    addNewPlayer(id.id,id.x,id.y)
+    console.log('NEW PLAYER:',id.id);
+    //connect.play()
   })
-  function addNewPlayer(id){
-    players.push(new Player(800,300,Bodies,Body,World,ourWorld,defaultCategory,id))
+  function addNewPlayer(id,x,y){
+    players.push(new Player(x,y,Bodies,Body,World,ourWorld,defaultCategory,id))
+    console.log(players);
+    console.log(player.id);
   }
   function updatePlayers(pack){
-//console.log(pack);
     players.forEach(p =>{
-      console.log(p.id);
       pack.forEach(pac=>{
         if (pac.id==p.id) {
-          ///player can be updated here
-          console.log(`saysomething`)
-
+          Body.setPosition( p.b, {x:pac.x, y:pac.y});
+          Body.setVelocity( p.b, {x:pac.velX, y:pac.velY});
         }
-
       })
-
     })
   }
   function deletePlayer(id){
     for (var i = players.length-1; i >=0; i--) {
-
         if(players[i].id==id){
           console.log('in for loop');
           World.remove(ourWorld,players[i].b)
           players.splice(i,1)
-
         }
       }
-
   }
   let lastTime=0
-  const player = new Player(800,300,Bodies,Body,World,ourWorld,defaultCategory)
 
   //change click event to execute on mouse down
   // let mouseDownID = -1
@@ -183,47 +190,48 @@
   // document.addEventListener('mouseUp', mouseUp)
   // document.addEventListener('mouseout', mouseUp)
 
-   render.canvas.addEventListener('click', (event) => {
-      player.shoot(event)
-      laser.play()
-    })
-  
+   // render.canvas.addEventListener('click', (event) => {
+   //    player.shoot(event)
+   //    laser.play()
+   //  })
+
   document.addEventListener('keydown', (event) => {
     event.preventDefault()
   	if (event.keyCode==83) {
   		player.setDirY(1)
-      socket.emit('keyPress',{inputId:'down',state:true})
+      socket.emit('keyPress',{inputId:'down',state:true,pos:player.b.position,vel:player.b.velocity})
   	}
     if (event.keyCode==65) {
       player.setDirX(-1)
-      socket.emit('keyPress',{inputId:'left',state:true})
+      socket.emit('keyPress',{inputId:'left',state:true,pos:player.b.position,vel:player.b.velocity})
     }
     if (event.keyCode==87) {
       	player.setDirY(-1)
-        socket.emit('keyPress',{inputId:'up',state:true})
+        socket.emit('keyPress',{inputId:'up',state:true,pos:player.b.position,vel:player.b.velocity})
     }
     if (event.keyCode==68) {
   	   player.setDirX(1)
-       socket.emit('keyPress',{inputId:'right',state:true})
+       socket.emit('keyPress',{inputId:'right',state:true,pos:player.b.position,vel:player.b.velocity})
     }
   });
   document.addEventListener('keyup', (event) => {
     event.preventDefault()
   	if (event.keyCode==83) {
   			player.setDirY(0)
-        socket.emit('keyPress',{inputId:'down',state:false})
+        socket.emit('keyPress',{inputId:'down',state:false,pos:player.b.position,vel:{x:player.b.velocity.x,y:0}})
+
   	}
     if (event.keyCode==65) {
     player.setDirX(0)
-    socket.emit('keyPress',{inputId:'left',state:false})
+    socket.emit('keyPress',{inputId:'left',state:false,pos:player.b.position,vel:{x:0,y:player.b.velocity.y}})
     }
     if (event.keyCode==87) {
       	player.setDirY(0)
-        socket.emit('keyPress',{inputId:'up',state:false})
+        socket.emit('keyPress',{inputId:'up',state:false,pos:player.b.position,vel:{x:player.b.velocity.x,y:0}})
     }
     if (event.keyCode==68) {
   	   player.setDirX(0)
-       socket.emit('keyPress',{inputId:'right',state:false})
+       socket.emit('keyPress',{inputId:'right',state:false,pos:player.b.position,vel:{x:0,y:player.b.velocity.y}})
     }
   });
 
@@ -264,8 +272,9 @@
       // context.fillRect(windowWidth/2, windowHeight/2,10,10)
 
       player.update()
+      socket.emit('update',{inputId:'right',state:false,pos:player.b.position,vel:player.b.velocity})
+
 
       Engine.update(engine, 1000 / 60);
   			window.requestAnimationFrame(run);
   })()
-  //export{windowWidth,windowHeight,World,Body,Bodies,redCategory,ourWorld}

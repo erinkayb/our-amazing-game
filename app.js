@@ -3,7 +3,7 @@ const app = express()
 const port = 3000
 const serv= require('http').Server(app)
 let io = require('socket.io')(serv)
-let howler = require('howler')
+//let howler = require('howler')
 
 app.use(express.static(__dirname + '/client'))
 app.get('/', (req, response) => {
@@ -17,8 +17,10 @@ let PLAYER_LIST ={}
 
 let Player =(id)=>{
   let self={
-    x:120,
-    y:120,
+    x:800,
+    y:300,
+    velX:0,
+    velY:0,
     id:id,
     pressingRight:false,
     pressingLeft:false,
@@ -36,7 +38,7 @@ let Player =(id)=>{
     if(self.pressingUp){
       self.y-=self.speed
     }
-    if(self.pressingDpwn){
+    if(self.pressingDown){
       self.y+=self.speed
     }
   }
@@ -45,6 +47,7 @@ let Player =(id)=>{
 io.sockets.on('connection', (socket)=>{
   let sessionID = socket.id
   console.log(`client connected ${socket.id}`)
+  console.log(`session id  ${sessionID}`)
   // socket.on('happy',(data)=>{
   //   console.log(`happy ${data.reason}`);
   // });
@@ -52,32 +55,42 @@ io.sockets.on('connection', (socket)=>{
   SOCKET_LIST[socket.id]=socket
   let player = Player(socket.id)
   PLAYER_LIST[socket.id]=player
+
+  socket.emit('currentPlayers',  {players:PLAYER_LIST,id:sessionID})
+
   socket.on('keyPress',(data)=>{
-    if(data.inputId=='left'){
-      player.pressingLeft=data.state
-    }else if(data.inputId=='right'){
-      player.pressingRight=data.state
-    }else if(data.inputId=='down'){
-      player.pressingDown=data.state
-    }else if(data.inputId=='up'){
-      player.pressingUp=data.state
-    }
+      // player.x=data.pos.x
+      // player.y=data.pos.y
+      // player.velX=data.vel.x
+      // player.velY=data.vel.y
+    // if(data.inputId=='left'){
+    //   player.pressingLeft=data.state
+    // }if(data.inputId=='right'){
+    //   player.pressingRight=data.state
+    //
+    // }if(data.inputId=='down'){
+    //   player.pressingDown=data.state
+    // }if(data.inputId=='up'){
+    //   player.pressingUp=data.state
+    // }
   });
+  socket.on('update',(data)=>{
+    player.x=data.pos.x
+    player.y=data.pos.y
+    player.velX=data.vel.x
+    player.velY=data.vel.y
+  })
 
   //send players object to new player
-  //socket.emit('currentPlayers', players);
+
   socket.broadcast.emit('newPlayer',PLAYER_LIST[socket.id])
 
   socket.on('disconnect',(socket)=>{
     console.log(`----client disconnected---- `);
-    //remove player from players object
-    //////////////////////////io.emit('deletePlayer',socket.id)
-    //console.log(SOCKET_LIST[socket.id]); //"UNDEFINED"
-    //tell clientes that playerID has disconnected
-    io.emit('disconnect', socket.id)
+    io.emit('disconnect', sessionID)
 
-    delete SOCKET_LIST[socket.id]
-    delete PLAYER_LIST[socket.id]
+    delete SOCKET_LIST[sessionID]
+    delete PLAYER_LIST[sessionID]
   })
 })
 
@@ -90,7 +103,13 @@ setInterval(()=>{
       pack.push({
         x:player.x,
         y:player.y,
-        id:player.id
+        velX:player.velX,
+        velY:player.velY,
+        id:player.id,
+        up:player.pressingUp,
+        down:player.pressingDown,
+        left:player.pressingLeft,
+        right:player.pressingRight
       })
   }
   for (var i in SOCKET_LIST) {
@@ -98,6 +117,6 @@ setInterval(()=>{
   socket.emit('newPosition',pack)
   }
 
-},1000/25)
+},1000/60)
 
 serv.listen(port, () => console.log(`listening on port ${port}!`))
