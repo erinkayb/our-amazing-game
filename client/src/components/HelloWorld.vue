@@ -241,7 +241,6 @@ a.clip-each:hover {
   img{
     position:fixed;
     max-height: 200px;
-
     left: 0;
   }
   .clip-border {
