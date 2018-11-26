@@ -4,6 +4,7 @@ class Player{
     this.pos={x:x,y:y}
     this.speed=5
     this.id=id
+    this.health=100
     this.dirX=0
     this.dirY=0
     this.bulletDirectionX=0
@@ -13,7 +14,7 @@ class Player{
     this.Body=body
     this.ourWorld=ourworld
     this.category=cat
-    this.b =   this.bodies.rectangle(x, y, 64, 64, {collisionFilter:{mask: this.category}})
+    this.b =this.bodies.rectangle(x, y, 64, 64, {collisionFilter:{category:cat,mask:defaultCategory|blueCategory|redCategory|greenCategory}})
     this.b.label="player"
     this.bullets=[]
     this.World.add(this.ourWorld, this.b);
@@ -24,10 +25,9 @@ class Player{
   setDirY(y){
     this.dirY=y
   }
-  shoot(direct){
+  shoot(direct,cat,centre){
 
-    this.bullets.push(new Bullet(this.pos,direct))
-
+    this.bullets.push(new Bullet(this.pos,direct,cat,centre))
 
   }
   move(){
@@ -57,11 +57,8 @@ class Player{
   updateBullets(){
     for (var i = this.bullets.length-1; i >=0; i--) {
       if (this.bullets[i].b.label==='stop') {
-
-            //this.deleteBullet(this.bullets[i].b,i)
              this.World.remove(this.ourWorld,this.bullets[i].b)
              this.bullets.splice(i,1)
-
       }
     }
   }

@@ -27,10 +27,12 @@
   let worldHeight =3072
   let windowWidth = render.options.width
   let windowHeight = render.options.height
+  let centreScreen={x:windowWidth/2,y:windowHeight/2}
   var defaultCategory = 0x0001,
          redCategory = 0x0002,
          greenCategory = 0x0004,
-         blueCategory = 0x0008;
+         blueCategory = 0x0008,
+         yellowCategory=0x0009
   let score = 0
   var dino = Bodies.rectangle(50, 500, 20, 40)
   dino.label="dino"
@@ -50,10 +52,10 @@
   var house6 = Bodies.rectangle(630, 1800, 500, 30, { isStatic: true })
   var l1 = Bodies.rectangle(-500, 2300, 1050, 50, { isStatic: true ,angle:-0.785})
   var l2 = Bodies.rectangle(-800, 2100, 700, 50, { isStatic: true ,angle:0.785})
-  var barrel = Bodies.circle(1200,300,70,{mass:500})
-  var barrel2 = Bodies.circle(1100,300,70,{mass:500})
-  var barrel3 = Bodies.circle(1280,425,70,{mass:500})
-  var barrel4 = Bodies.circle(1150,425,70,{mass:500})
+  var barrel = Bodies.circle(1200,300,70,{mass:500,collisionFilter:{category:defaultCategory}})
+  var barrel2 = Bodies.circle(1100,300,70,{mass:500,collisionFilter:{category:defaultCategory}})
+  var barrel3 = Bodies.circle(1280,425,70,{mass:500,collisionFilter:{category:defaultCategory}})
+  var barrel4 = Bodies.circle(1150,425,70,{mass:500,collisionFilter:{category:defaultCategory}})
   // add all of the bodies to the world
   World.add(ourWorld, [dino,ground,borderTop,borderLeft,borderRight,borderBottom,
             sRb,sRb2,sRb3,
@@ -109,22 +111,18 @@
   let players=[]
   //const player = new Player(800,300,Bodies,Body,World,ourWorld,defaultCategory)
   //console.log('socket',socket.id);
-  let player =new Player(800,300,Bodies,Body,World,ourWorld,defaultCategory,socket.id)
+  const player =new Player(800,300,Bodies,Body,World,ourWorld,greenCategory,socket.id)
 
 
   // socket.emit('happy',{
   //   reason:'it is working'
   // })
   socket.on('currentPlayers',(data)=>{
-//console.log('player:',player.id);
-console.log('currentPlayers');
-  player.id=data.id
-    for (var p in data.players) {
-      if (data.players[p].id!==player.id) {
-        //console.log(data[p].id);
-        //console.log(player.id);
-        addNewPlayer(data.players[p].id,data.players[p].x,data.players[p].y)
-    }
+    player.id=data.id
+      for (var p in data.players) {
+        if (data.players[p].id!==player.id) {
+          addNewPlayer(data.players[p].id,data.players[p].x,data.players[p].y)
+      }
   }
 
   })
@@ -142,10 +140,20 @@ console.log('currentPlayers');
     console.log('NEW PLAYER:',id.id);
     //connect.play()
   })
+  socket.on('enemyFire',(data)=>{
+    if (data.id !==player.id) {
+      players.forEach(p=>{
+        if (data.id==p.id) {
+          p.shoot(data.dir,greenCategory,data.center)
+
+
+        }
+      })
+    }
+
+  })
   function addNewPlayer(id,x,y){
-    players.push(new Player(x,y,Bodies,Body,World,ourWorld,defaultCategory,id))
-    console.log(players);
-    console.log(player.id);
+    players.push(new Player(x,y,Bodies,Body,World,ourWorld,blueCategory,id))
   }
   function updatePlayers(pack){
     players.forEach(p =>{
@@ -160,7 +168,6 @@ console.log('currentPlayers');
   function deletePlayer(id){
     for (var i = players.length-1; i >=0; i--) {
         if(players[i].id==id){
-          console.log('in for loop');
           World.remove(ourWorld,players[i].b)
           players.splice(i,1)
         }
@@ -190,10 +197,12 @@ console.log('currentPlayers');
   // document.addEventListener('mouseUp', mouseUp)
   // document.addEventListener('mouseout', mouseUp)
 
-   // render.canvas.addEventListener('click', (event) => {
-   //    player.shoot(event)
-   //    laser.play()
-   //  })
+   render.canvas.addEventListener('click', (event) => {
+      player.shoot(event,blueCategory,centreScreen)
+      socket.emit('shoot',{dir:{x:event.x,y:event.y},center:centreScreen})
+
+      //laser.play()
+    })
 
   document.addEventListener('keydown', (event) => {
     event.preventDefault()
@@ -219,7 +228,6 @@ console.log('currentPlayers');
   	if (event.keyCode==83) {
   			player.setDirY(0)
         socket.emit('keyPress',{inputId:'down',state:false,pos:player.b.position,vel:{x:player.b.velocity.x,y:0}})
-
   	}
     if (event.keyCode==65) {
     player.setDirX(0)
@@ -246,10 +254,29 @@ console.log('currentPlayers');
   		pairs.forEach(pair =>{
   			if (pair.bodyA.label === 'bullet') {
               pair.bodyA.label='stop'
+              if (pair.bodyB.label==='player') {
+                players.forEach(p=>{
+                  if (p.b.id===pair.bodyB.id) {
+                      p.health--
+                      //console.log(p.health);
+                      //tell players he been hit
+                  }
+                })
+
+              }
         }
   			if (pair.bodyB.label==='bullet') {
             pair.bodyB.label='stop'
+            if (pair.bodyA.label==='player') {
+              players.forEach(p=>{
+                if (p.b.id===pair.bodyA.id) {
+                    p.health--
+                    //console.log(p.health);
+                }
+              })
+            }
   			}
+
   		})
 
 
@@ -267,10 +294,11 @@ console.log('currentPlayers');
       Render.lookAt(render, player.pos, {x: WIDTH,y: HEIGHT});//player needs a .x and .y
 
 
-  		// context.fillStyle = "white";
-  		// context.fillText('x:y:', windowWidth/2, windowHeight/2);
-      // context.fillRect(windowWidth/2, windowHeight/2,10,10)
-
+  		context.fillStyle = "white";
+  		context.fillText(`${player.health}%`, 50, 50);
+      players.forEach(p=>{
+        p.update()
+      })
       player.update()
       socket.emit('update',{inputId:'right',state:false,pos:player.b.position,vel:player.b.velocity})
 

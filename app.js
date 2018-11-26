@@ -80,6 +80,9 @@ io.sockets.on('connection', (socket)=>{
     player.velX=data.vel.x
     player.velY=data.vel.y
   })
+  socket.on('shoot',(data)=>{
+    io.emit('enemyFire',{dir:data.dir,id:sessionID,center:data.center})
+  })
 
   //send players object to new player
 
