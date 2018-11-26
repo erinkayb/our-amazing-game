@@ -13,7 +13,16 @@
             <div class='pl-4 pr-4 pt-4 pb-4'>
               <v-flex>
                 Your stats? Maybe.... I don't know
-              </v-flex>
+                <br/>
+                <v-btn @click="navigateTo({
+                  name: 'checkout',
+                  params: {
+                    userID: users.id
+                  }
+                  })">
+                  Remove Ads</router-link>
+              </v-btn>
+            </v-flex>
             </div>
           </v-toolbar>
           </div>
@@ -76,8 +85,14 @@ export default {
   async mounted () {
     this.users.push( (await userservice.index()).data)
     console.log("users:",this.users);
-  }
+  },
+methods: {
+  navigateTo (route) {
+        this.$router.push(route)
+      }
 }
+}
+
 </script>
 
 <style scoped>
