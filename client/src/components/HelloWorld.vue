@@ -85,11 +85,6 @@ a {
   color: #42b983;
 }
 
-body {
-  font-family: 'Roboto Condensed', sans-serif;
-  line-height: 1.5;
-}
-
 p {
   margin-bottom: 40%;
   text-align: center;
@@ -99,7 +94,7 @@ p {
 
 .wrap {
   color: #222;
-  font-size: 24px;
+  font-size: 40px;
 }
 
 .clip-svg {

@@ -69,14 +69,23 @@
             ></v-text-field>
           </form>
           </v-flex>
+          <div class="error" v-html="error"></div>
+          <v-btn large flat class="regbtn"
+            @click="register">
+            Register
+          </v-btn>
         </span>
       </div>
       <div class="groupcircles">
         <div class="circle2">
-          <span class="circlespansmall">Login</span>
+          <span class="circlespansmall"><a href="/#/login">
+    				Login
+    			</a></span>
         </div>
         <div class="circle4">
-          <span class="circlespansmall">Home</span>
+          <span class="circlespansmall"><a href="/#/">
+    				Home
+    			</a></span>
         </div>
       </div>
       <img src="https://res.cloudinary.com/erinkayb/image/upload/v1543240847/radOrange.png" alt="">
@@ -172,16 +181,26 @@ export default {
 }
 .circle2:hover{
   background-color: #ef6c00;
+  cursor: pointer;
 }
 .circle4:hover{
   background-color: #ef6c00;
+  cursor: pointer;
 }
 h1{
   margin-top: -10px;
+}
+.regbtn{
+    background-color: #0071bc;
+    color:white;
 }
 img{
   position:fixed;
   max-height: 200px;
   left: 66%;
+}
+a{
+  text-decoration: none;
+  color:white;
 }
 </style>
