@@ -2,7 +2,17 @@
       Render = Matter.Render,
       World = Matter.World,
       Bodies = Matter.Bodies,
-    	Body = Matter.Body
+    	Body = Matter.Body,
+      Common = Matter.Common,
+      Query = Matter.Query,
+      MouseConstraint = Matter.MouseConstraint,
+      Mouse = Matter.Mouse,
+      Events = Matter.Events,
+      Vertices = Matter.Vertices,
+      Composite = Matter.Composite,
+      Composites = Matter.Composites
+
+
   // create an engine
   var engine = Engine.create();
   var ourWorld = engine.world
@@ -14,6 +24,7 @@
           height: window.innerHeight,
            wireframes: false,
            hasBounds:true,
+           showAngleIndicator: true
            //background:'/maxresdefault.jpg'
         }
   });
@@ -61,48 +72,93 @@
             l1,l2,
             barrel,barrel2,barrel3,barrel4
           ]);
-  // run the engine
+
+   // run the engine
   Engine.run(engine);
   // run the renderer
   Render.run(render);
   //disabeling gravity
   ourWorld.gravity.scale=0
 
+  let mouseConstraint = Matter.MouseConstraint
+  //let Bodies = Matter.Bodies
 
-  // //-------AUDIO-------
-  // document.addEventListener('DOMContentLoaded', function(){
-  //     //song.play();
-  //   }, false)
-  // //player shoot
-  // const laser = new Howl({
-  //     volume: 0.5,
-  //     src: ['./js/laser.mp3']
-  //   });
-  // //player spawn
-  //  const spawn = new Howl({
-  //   volume: 0.5,
-  //   src: ['./js/spawn.mp3']
-  //  })
-  // //player dead
-  // const dead = new Howl({
-  //   volume: 0.8,
-  //   src: ['./js/killed.mp3']
-  //  })
-  // //client connects
-  // const connect = new Howl({
-  //   volume: 0.6,
-  //   src: ['./js/connect.mp3']
-  //  })
-  // //client disconnect
-  // const disconnect = new Howl({
-  //   volume: 0.6,
-  //   src: ['./js/disconnect.mp3']
-  //  })
-  // //background song
-  // const song = new Howl({
-  //     volume: 0.1,
-  //     src: ['./js/song_compressed.mp3'],
-  //  })
+
+
+  //-------AUDIO-------
+  document.addEventListener('DOMContentLoaded', function(){
+      //song.play();
+    }, false)
+  //player shoot
+  const laser = new Howl({
+      volume: 1,
+      src: ['./js/laser.mp3']
+    });
+  //player spawn
+   const spawn = new Howl({
+    volume: 0.5,
+    src: ['./js/spawn.mp3']
+   })
+  //player dead
+  const dead = new Howl({
+    volume: 0.8,
+    src: ['./js/killed.mp3']
+   })
+  //client connects
+  const connect = new Howl({
+    volume: 1,
+    src: ['./js/connect.mp3']
+   })
+  //client disconnect
+  const disconnect = new Howl({
+    volume: 1,
+    src: ['./js/disconnect.mp3']
+   })
+  //background song
+  const song = new Howl({
+      volume: 0.1,
+      src: ['./js/song_compressed.mp3'],
+   })
+
+//------raycasting-----//
+
+   Events.on(render, 'afterRender', function() {
+        var mouse = mouseConstraint.mouse,
+            context = render.context,
+            bodies = Composite.allBodies(engine.world),
+            startPoint = player.pos,
+            endPoint = { x: player.pos.x+400, y: player.pos.y+400 }
+            //endPoint = Mouse.position;  //need to properly define
+
+        var collisions = Query.ray(bodies, startPoint, endPoint);
+
+        Render.startViewTransform(render);
+
+        context.beginPath();
+        context.moveTo(startPoint.x, startPoint.y);
+        context.lineTo(endPoint.x, endPoint.y);
+        if (collisions.length > 0) {
+            context.strokeStyle = '#fff';
+        } else {
+            context.strokeStyle = '#555';
+        }
+        context.lineWidth = 0.5;
+        context.stroke();
+
+        for (var i = 0; i < collisions.length; i++) {
+            var collision = collisions[i];
+            context.rect(collision.bodyA.position.x - 4.5, collision.bodyA.position.y - 4.5, 8, 8);
+        }
+
+        context.fillStyle = 'rgba(255,165,0,0.7)';
+        context.fill();
+
+        Render.endViewTransform(render);
+    });
+
+
+//-----raycast end-----//
+
 
   //players on client
   let socket = io();
@@ -134,18 +190,19 @@ console.log('currentPlayers');
   socket.on('disconnect',(id)=>{
 
       deletePlayer(id)
+      disconnect.play()
       console.log(`disconnecting: ${id}`)
   })
 
   socket.on('newPlayer',(id)=>{
     addNewPlayer(id.id,id.x,id.y)
     console.log('NEW PLAYER:',id.id);
-    //connect.play()
+    connect.play()
   })
   function addNewPlayer(id,x,y){
     players.push(new Player(x,y,Bodies,Body,World,ourWorld,defaultCategory,id))
-    console.log(players);
-    console.log(player.id);
+    // console.log(players);
+    // console.log(player.id);
   }
   function updatePlayers(pack){
     players.forEach(p =>{
@@ -190,10 +247,15 @@ console.log('currentPlayers');
   // document.addEventListener('mouseUp', mouseUp)
   // document.addEventListener('mouseout', mouseUp)
 
-   // render.canvas.addEventListener('click', (event) => {
-   //    player.shoot(event)
-   //    laser.play()
-   //  })
+   render.canvas.addEventListener('click', (event) => {
+      player.shoot(event)
+      laser.play()
+    })
+
+   // render.canvas.addEventListener('mousemove', (e) => {
+   //      xMousePos = e.x
+   //      yMousePos = e.y
+   //    })
 
   document.addEventListener('keydown', (event) => {
     event.preventDefault()
@@ -266,14 +328,8 @@ console.log('currentPlayers');
   		}
       Render.lookAt(render, player.pos, {x: WIDTH,y: HEIGHT});//player needs a .x and .y
 
-
-  		// context.fillStyle = "white";
-  		// context.fillText('x:y:', windowWidth/2, windowHeight/2);
-      // context.fillRect(windowWidth/2, windowHeight/2,10,10)
-
       player.update()
       socket.emit('update',{inputId:'right',state:false,pos:player.b.position,vel:player.b.velocity})
-
 
       Engine.update(engine, 1000 / 60);
   			window.requestAnimationFrame(run);
