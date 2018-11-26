@@ -2,6 +2,8 @@ const {User} = require('../models')
 const jwt = require('jsonwebtoken')
 const config = require('../config/config')
 
+let user
+
 function jwtSignUser(user){
   const ONE_WEEK = 60 * 60 * 24 * 7
   return jwt.sign(user, config.authentication.jwtSecret, {
@@ -28,7 +30,7 @@ module.exports = {
   async login (req, res) {
     try {
       const {email, password} = req.body
-      const user = await User.findOne({ //find the user where email equals email
+      user = await User.findOne({ //find the user where email equals email
         where: {
           email: email
         }
@@ -54,9 +56,19 @@ module.exports = {
         user: userJson,
         token: jwtSignUser(userJson)
       })
+
     } catch (err) {
       res.status(500).send({
         error: 'An error has occured.'
+      })
+    }
+  },
+  async index (req, res) {
+    try {
+      res.send(user)
+    } catch (err) {
+      res.status(500).send({
+        error: 'An error has occured fetching users.'
       })
     }
   }

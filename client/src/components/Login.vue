@@ -30,7 +30,13 @@
 
             <div class="error" v-html="error"></div>
             <v-btn class='elevation-8 blue-grey darken-3' dark
-              @click="login" to="loggedin">
+              @click="login">
+              <!-- $navigateTo({
+                name: 'loggedin',
+                params: {
+                  userId: user.id
+                }
+                }) -->
               Login
             </v-btn>
           </div>
@@ -43,6 +49,7 @@
 <script>
 import authService from '@/services/auth'
 export default {
+
   data () {
     return {
       email: '',
@@ -59,9 +66,14 @@ export default {
         })
         this.$store.dispatch('setToken', response.data.token)
         this.$store.dispatch('setUser', response.data.user)
-        // this.$router.push({
-        //   name: 'loginlanding'
-        // })
+        if(response){
+        this.$router.push({
+          name: 'loggedin',
+          params: {
+            userId: response.data.user.id
+          }
+        })
+      }
       } catch (error) {
         this.error = error.response.data.error
       }

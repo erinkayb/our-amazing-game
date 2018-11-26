@@ -25,7 +25,7 @@ export default new Router({
       component: Login
     },
     {
-      path: '/loggedin',
+      path: '/loggedin/:userId',
       name: 'loggedin',
       component: loggedin
     }
