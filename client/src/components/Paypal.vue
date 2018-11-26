@@ -42,7 +42,7 @@ export default {
                     payment: {
                         transactions: [
                             {
-                                amount: { total: '0.01', currency: 'USD' }
+                                amount: { total: '5.0', currency: 'USD' }
                             }
                         ]
                     }

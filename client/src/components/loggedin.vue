@@ -20,7 +20,7 @@
                     userID: users.id
                   }
                   })">
-                  Remove Ads</router-link>
+                  Donate</router-link>
               </v-btn>
             </v-flex>
             </div>
