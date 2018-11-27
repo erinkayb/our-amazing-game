@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <v-app>
-      <nav-header/>
+      <!-- <nav-header/> -->
       <main>
         <v-container fluid>
           <router-view/>
@@ -23,15 +23,17 @@ export default {
 
 <style>
 body{
-  background-color: #263238;
+  margin: auto;
 }
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #263238;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  background-image: url(https://res.cloudinary.com/erinkayb/image/upload/v1543239154/overlayblack.png);
+  background-position: center; /* Center the image */
+  background-repeat: no-repeat; /* Do not repeat the image */
+  background-size: cover;
 }
 </style>
