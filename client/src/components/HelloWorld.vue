@@ -1,7 +1,7 @@
 <template>
   <v-container grid-list-xl text-md-center>
     <div class="logo">
-      <img src="https://res.cloudinary.com/erinkayb/image/upload/v1543240847/radOrange.png" alt="">
+      <img src="https://res.cloudinary.com/erinkayb/image/upload/v1543335773/radwarsOrange.png" alt="">
     </div>
     <v-layout row wrap>
 <!-- #e515e1 pink

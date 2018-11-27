@@ -1,7 +1,7 @@
 <template>
   <v-container >
     <div class="logo">
-      <img src="https://res.cloudinary.com/erinkayb/image/upload/v1543240847/radOrange.png" alt="">
+      <img src="https://res.cloudinary.com/erinkayb/image/upload/v1543335773/radwarsOrange.png" alt="">
     </div>
     <a href="/#/"><div class="parallelogram-container-two">Home</div></a>
     <a href="/#/register"><div class="parallelogram-container-three">Register</div></a>

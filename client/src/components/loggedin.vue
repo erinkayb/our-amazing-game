@@ -1,7 +1,7 @@
 <template lang="html">
   <v-container>
     <div class="logo">
-      <img src="https://res.cloudinary.com/erinkayb/image/upload/v1543240847/radOrange.png" alt="">
+      <img src="https://res.cloudinary.com/erinkayb/image/upload/v1543335773/radwarsOrange.png" alt="">
     </div>
 
     <div class="welcome" v-for="u in users":key="u.name">

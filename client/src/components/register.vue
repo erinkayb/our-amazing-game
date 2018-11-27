@@ -88,7 +88,7 @@
     			</a></span>
         </div>
       </div>
-      <img src="https://res.cloudinary.com/erinkayb/image/upload/v1543240847/radOrange.png" alt="">
+      <img src="https://res.cloudinary.com/erinkayb/image/upload/v1543335773/radwarsOrange.png" alt="">
     </div>
   <!-- </v-container> -->
 </template>
