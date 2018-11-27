@@ -1,10 +1,10 @@
-//import Bullet from './bullet.js'
 class Player{
   constructor(x=100,y=100,bodies,body,world,ourworld,cat,id){
     this.pos={x:x,y:y}
     this.speed=5
     this.id=id
     this.health=100
+    this.dead=false
     this.dirX=0
     this.dirY=0
     this.bulletDirectionX=0
@@ -26,9 +26,7 @@ class Player{
     this.dirY=y
   }
   shoot(direct,cat,centre){
-
     this.bullets.push(new Bullet(this.pos,direct,cat,centre))
-
   }
   move(){
     switch (this.dirX) {
@@ -62,22 +60,12 @@ class Player{
       }
     }
   }
-  deleteBullet(b,index){
-    // setTimeout(function(){
-      //World.remove(ourWorld,b)
-      //player.bullets.splice(index,1)
-
-    // }, 100);
-  }
   update(){
 
     this.pos = this.b.position
     this.updateBullets()
     //Body.setAngularVelocity(this.b, 0)
     this.move()
-
-
-
   }
 
 }

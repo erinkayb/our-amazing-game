@@ -14,7 +14,6 @@
           height: window.innerHeight,
            wireframes: false,
            hasBounds:true,
-           //background:'/maxresdefault.jpg'
         }
   });
   var context = render.context;
@@ -109,14 +108,8 @@
   //players on client
   let socket = io();
   let players=[]
-  //const player = new Player(800,300,Bodies,Body,World,ourWorld,defaultCategory)
-  //console.log('socket',socket.id);
-  const player =new Player(800,300,Bodies,Body,World,ourWorld,greenCategory,socket.id)
+  const player =new Player(Math.floor(Math.random()*1450)-1450,Math.floor(Math.random()*3000)+60,Bodies,Body,World,ourWorld,blueCategory,socket.id)
 
-
-  // socket.emit('happy',{
-  //   reason:'it is working'
-  // })
   socket.on('currentPlayers',(data)=>{
     player.id=data.id
       for (var p in data.players) {
@@ -144,9 +137,7 @@
     if (data.id !==player.id) {
       players.forEach(p=>{
         if (data.id==p.id) {
-          p.shoot(data.dir,greenCategory,data.center)
-
-
+          p.shoot(data.dir,blueCategory,data.center)
         }
       })
     }
@@ -161,6 +152,7 @@
         if (pac.id==p.id) {
           Body.setPosition( p.b, {x:pac.x, y:pac.y});
           Body.setVelocity( p.b, {x:pac.velX, y:pac.velY});
+          p.dead=pac.dead
         }
       })
     })
@@ -198,8 +190,10 @@
   // document.addEventListener('mouseout', mouseUp)
 
    render.canvas.addEventListener('click', (event) => {
-      player.shoot(event,blueCategory,centreScreen)
-      socket.emit('shoot',{dir:{x:event.x,y:event.y},center:centreScreen})
+     if (!player.dead) {
+       player.shoot(event,blueCategory,centreScreen)
+       socket.emit('shoot',{dir:{x:event.x,y:event.y},center:centreScreen})
+     }
 
       //laser.play()
     })
@@ -242,44 +236,26 @@
        socket.emit('keyPress',{inputId:'right',state:false,pos:player.b.position,vel:{x:0,y:player.b.velocity.y}})
     }
   });
-
-  //outputs playermovement to server
-  // setInterval(() => {
-  //   socket.emit('playerMovement', playerMovement);
-  // }, 1000 / 60)
-
   Matter.Events.on(engine, 'collisionStart', function(event) {
-
   		let pairs =event.pairs
   		pairs.forEach(pair =>{
   			if (pair.bodyA.label === 'bullet') {
               pair.bodyA.label='stop'
               if (pair.bodyB.label==='player') {
-                players.forEach(p=>{
-                  if (p.b.id===pair.bodyB.id) {
-                      p.health--
-                      //console.log(p.health);
-                      //tell players he been hit
-                  }
-                })
-
+                if (pair.bodyB.id===player.b.id) {
+                  player.health-=50
+                }
               }
         }
   			if (pair.bodyB.label==='bullet') {
             pair.bodyB.label='stop'
             if (pair.bodyA.label==='player') {
-              players.forEach(p=>{
-                if (p.b.id===pair.bodyA.id) {
-                    p.health--
-                    //console.log(p.health);
-                }
-              })
+              if (pair.bodyA.id===player.b.id) {
+                player.health-=50
+              }
             }
   			}
-
   		})
-
-
   });
   function reset(){
   	score =0
@@ -291,16 +267,38 @@
 
   			lastTime=t
   		}
-      Render.lookAt(render, player.pos, {x: WIDTH,y: HEIGHT});//player needs a .x and .y
+      if (!player.dead) {
+        Render.lookAt(render, player.pos, {x: WIDTH,y: HEIGHT});
+      }else{
+        Render.lookAt(render, {x:0,y:worldHeight/2}, {x: worldWidth/2,y: worldHeight/2});
+      }
 
 
+      if (player.health<=0) {
+        World.remove(ourWorld,player.b)
+        player.dead=true
+        context.fillStyle = "white";
+    		context.fillText("DEAD", window.innerWidth/2,window.innerHeight/2,);
+    		context.fillText("waiting for players", window.innerWidth/2, window.innerHeight/2+50,);
+      }
   		context.fillStyle = "white";
   		context.fillText(`${player.health}%`, 50, 50);
-      players.forEach(p=>{
-        p.update()
-      })
+      for (var i = 0; i < players.length; i++) {
+        players[i].update()
+        if (players[i].dead) {
+          for (var j = players[i].bullets.length-1; j >=0; j--) {
+            World.remove(ourWorld,players[i].bullets[j].b)
+            players[i].bullets.splice(j,1)
+          }
+          World.remove(ourWorld,players[i].b)
+          players.splice(i,1)
+
+        }
+      }
+
+
       player.update()
-      socket.emit('update',{inputId:'right',state:false,pos:player.b.position,vel:player.b.velocity})
+      socket.emit('update',{inputId:'right',state:false,pos:player.b.position,vel:player.b.velocity,dead:player.dead})
 
 
       Engine.update(engine, 1000 / 60);
