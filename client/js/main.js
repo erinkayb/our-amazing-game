@@ -28,6 +28,18 @@
            //background:'/maxresdefault.jpg'
         }
   });
+  var lightCanvas = Render.create({
+     element: document.body,
+      engine: engine ,
+      options:{
+          width: window.innerWidth,
+          height: window.innerHeight,
+           wireframes: false,
+           hasBounds:true,
+           showAngleIndicator: true
+           //background:'/maxresdefault.jpg'
+        }
+  });
   var context = render.context;
   context.font = "30px Arial";
   context.fillStyle = "white";
@@ -59,7 +71,7 @@
   var house4 = Bodies.rectangle(750, 2300, 250, 60, { isStatic: true })
   var house5 = Bodies.rectangle(300, 2300, 250, 60, { isStatic: true })
   var house6 = Bodies.rectangle(630, 1800, 500, 30, { isStatic: true })
-  var l1 = Bodies.rectangle(-500, 2300, 1050, 50, { isStatic: true ,angle:-0.785})
+  var l1 = Bodies.rectangle(-500, 2300, 1050, 50, { isStatic: true,angle:-0.785})
   var l2 = Bodies.rectangle(-800, 2100, 700, 50, { isStatic: true ,angle:0.785})
   var barrel = Bodies.circle(1200,300,70,{mass:500})
   var barrel2 = Bodies.circle(1100,300,70,{mass:500})
@@ -72,17 +84,142 @@
             l1,l2,
             barrel,barrel2,barrel3,barrel4
           ]);
-
    // run the engine
   Engine.run(engine);
   // run the renderer
   Render.run(render);
+
   //disabeling gravity
   ourWorld.gravity.scale=0
 
-  let mouseConstraint = Matter.MouseConstraint
-  //let Bodies = Matter.Bodies
+//------raycasting-----//
 
+  let mouseConstraint = Matter.MouseConstraint
+  let walls = []
+  let polygons = [];
+  // var context = render.context;
+
+Events.on(render, 'afterRender', function(){
+  bodies = Composite.allBodies(engine.world)
+  let startPoint = player.pos
+  let endPoint = { x: player.pos.x+400, y: player.pos.y+400 };
+
+  var collisions = Query.ray(bodies, startPoint, endPoint)
+
+
+  let lightCanvas = document.getElementById('lightCanvas')
+  lightCanvas.height = window.innerHeight;
+  lightCanvas.width = window.innerWidth;
+  const context2 = lightCanvas.getContext('2d')
+  //context2.setTransform(0, 0, 0, 0, windowWidth, windowHeight)
+  context2.lineWidth = 0;
+  context2.strokeStyle = '#FFCC00'
+  context.fillStyle = '#FFCC00'
+
+
+//Render.startViewTransform(lightCanvas); //broken when turned on
+        context2.beginPath();
+        //top left box - TOP
+        context2.moveTo(startPoint.x, startPoint.y)
+        context2.lineTo(-1250,550)
+        context2.lineTo(-950,500)
+        context2.closePath();
+        //top left box - LEFT
+        context2.moveTo(startPoint.x, startPoint.y)
+        context2.lineTo(-1250,550)
+        context2.lineTo(-1250,850)
+        context2.closePath();
+        //top left box - BOTTOM
+        context2.moveTo(startPoint.x, startPoint.y)
+        context2.lineTo(-1250,850)
+        context2.lineTo(-950,850)
+        context2.closePath();
+        // top left box - RIGHT
+        context2.moveTo(startPoint.x, startPoint.y)
+        context2.lineTo(-950,550)
+        context2.lineTo(-950,850)
+        context2.closePath();
+
+        //
+        //
+        //HOUSE - LEFT
+        context2.moveTo(startPoint.x, startPoint.y);
+        context2.lineTo(200,1500);
+        context2.lineTo(200,2300);
+        context2.closePath();
+        //HOUSE - TOP
+        context2.moveTo(startPoint.x, startPoint.y);
+        context2.lineTo(200,1500);
+        context2.lineTo(900,1500);
+        context2.closePath();
+        //HOUSE - RIGHT
+        context2.moveTo(startPoint.x, startPoint.y);
+        context2.lineTo(900,2300);
+        context2.lineTo(900,1500);
+        context2.closePath();
+        // HOUSE - DOWN
+        context2.moveTo(startPoint.x, startPoint.y);
+        context2.lineTo(200,2300);
+        context2.lineTo(900,2300);
+        context2.closePath();
+
+        //GROUND
+        context2.moveTo(startPoint.x, startPoint.y);
+        context2.lineTo(10,610);
+        context2.lineTo(810,610);
+        context2.closePath();
+
+        //TERRILE SQUARE - TOP-TO-RIGHT
+        context2.moveTo(startPoint.x, startPoint.y);
+        context2.lineTo(-640,300);
+        context2.lineTo(-440,500);
+        context2.closePath();
+        //TERRILE SQUARE - TOP-TO-LEFT
+        context2.moveTo(startPoint.x, startPoint.y);
+        context2.lineTo(-640,300);
+        context2.lineTo(-850,500);
+        context2.closePath();
+        //TERRILE SQUARE - BOTTOM-TO-LEFT
+        context2.moveTo(startPoint.x, startPoint.y);
+        context2.lineTo(-640,700);
+        context2.lineTo(-850,500);
+        context2.closePath();
+        //TERRILE SQUARE - BOTTOM-TO-RIGHT
+        context2.moveTo(startPoint.x, startPoint.y);
+        context2.lineTo(-440,500);
+        context2.lineTo(-640,700);
+        context2.closePath();
+
+        //Y-SHAPE - LONG
+        context2.moveTo(startPoint.x, startPoint.y);
+        context2.lineTo(-1035,1860);
+        context2.lineTo(-873,2665);
+        context2.closePath();
+        //Y-SHAPE - SHORT
+        // context2.moveTo(startPoint.x, startPoint.y);
+        // context2.lineTo(x,y);
+        // context2.lineTo(x,y);
+        // context2.closePath();
+
+        if (collisions.length > 0) {
+            context2.strokeStyle = '#fff';
+        } else {
+            context2.strokeStyle = '#555';
+        }
+        context2.lineWidth = 0.5;
+        context2.stroke();
+
+        for (var i = 0; i < collisions.length; i++) {
+            var collision = collisions[i];
+            context2.rect(collision.bodyA.position.x - 4.5, collision.bodyA.position.y - 4.5, 8, 8);
+        }
+
+        context2.stroke();
+        context2.fill();
+      
+      //Render.endViewTransform(lightCanvas);
+  });
+//-----raycast end-----//
 
 
   //-------AUDIO-------
@@ -119,46 +256,6 @@
       volume: 0.1,
       src: ['./js/song_compressed.mp3'],
    })
-
-//------raycasting-----//
-
-   Events.on(render, 'afterRender', function() {
-        var mouse = mouseConstraint.mouse,
-            context = render.context,
-            bodies = Composite.allBodies(engine.world),
-            startPoint = player.pos,
-            endPoint = { x: player.pos.x+400, y: player.pos.y+400 }
-            //endPoint = Mouse.position;  //need to properly define
-
-        var collisions = Query.ray(bodies, startPoint, endPoint);
-
-        Render.startViewTransform(render);
-
-        context.beginPath();
-        context.moveTo(startPoint.x, startPoint.y);
-        context.lineTo(endPoint.x, endPoint.y);
-        if (collisions.length > 0) {
-            context.strokeStyle = '#fff';
-        } else {
-            context.strokeStyle = '#555';
-        }
-        context.lineWidth = 0.5;
-        context.stroke();
-
-        for (var i = 0; i < collisions.length; i++) {
-            var collision = collisions[i];
-            context.rect(collision.bodyA.position.x - 4.5, collision.bodyA.position.y - 4.5, 8, 8);
-        }
-
-        context.fillStyle = 'rgba(255,165,0,0.7)';
-        context.fill();
-
-        Render.endViewTransform(render);
-    });
-
-
-//-----raycast end-----//
-
 
   //players on client
   let socket = io();
@@ -329,6 +426,7 @@ console.log('currentPlayers');
       Render.lookAt(render, player.pos, {x: WIDTH,y: HEIGHT});//player needs a .x and .y
 
       player.update()
+      //move()
       socket.emit('update',{inputId:'right',state:false,pos:player.b.position,vel:player.b.velocity})
 
       Engine.update(engine, 1000 / 60);
