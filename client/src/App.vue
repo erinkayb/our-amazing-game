@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <v-app>
-      <!-- <nav-header/> -->
+      <nav-header/>
       <main>
         <v-container fluid>
           <router-view/>
@@ -26,7 +26,8 @@ body{
   margin: auto;
 }
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  @import url('https://fonts.googleapis.com/css?family=Orbitron:400,700');
+  font-family: 'Orbitron', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;

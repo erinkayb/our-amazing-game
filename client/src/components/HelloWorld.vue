@@ -87,9 +87,10 @@ a {
 
 p {
   margin-bottom: 40%;
-  text-align: center;
+  margin-left: 8%;
+  /* text-align: center; */
   color: black;
-  font-size: 20px;
+  font-size: 18px;
 }
 
 .wrap {
@@ -150,7 +151,7 @@ a.clip-each:hover {
   background: #0071bc;
   z-index: 1;
   width: 100%;
-  height: 155px;
+  height: 200px;
   -webkit-transition: all 0.2s linear;
   transition: all 0.2s linear;
   pointer-events: none;
@@ -171,7 +172,7 @@ a.clip-each:hover {
   position: absolute;
   bottom: 20px;
   right: 75px;
-  color: #fff;
+  color: #F5EDF0;
   font-size: 70%;
   z-index: 2;
 }
@@ -209,13 +210,6 @@ a.clip-each:hover {
   -webkit-clip-path: url("#hexagon-clip");
   clip-path: url("#hexagon-clip");
   z-index: -1;
-}
-
-.clip-tagline {
-  display: block;
-  color: #758C9B;
-  text-decoration: none;
-  text-align: center;
 }
 
 @media only screen and (min-width: 550px) {

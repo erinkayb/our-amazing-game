@@ -46,3 +46,10 @@ export default {
         },
 }
 </script>
+<style scoped>
+  .form-control{
+    max-width: 100px;
+    text-align: center;
+    display: inline-block;
+  }
+</style>
