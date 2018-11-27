@@ -228,15 +228,59 @@ a.clip-each:hover {
     -webkit-transform: translateY(-50%) translateX(-50%);
     transform: translateY(-50%) translateX(-50%);
   }
-
+  @keyframes slideInFromLeft {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+  @keyframes fadein {
+      from {
+          opacity:0;
+      }
+      to {
+          opacity:1;
+      }
+  }
+  @-moz-keyframes fadein { /* Firefox */
+      from {
+          opacity:0;
+      }
+      to {
+          opacity:1;
+      }
+  }
+  @-webkit-keyframes fadein { /* Safari and Chrome */
+      from {
+          opacity:0;
+      }
+      to {
+          opacity:1;
+      }
+  }
+  @-o-keyframes fadein { /* Opera */
+      from {
+          opacity:0;
+      }
+      to {
+          opacity: 1;
+      }
+  }
   .clip-block {
     display: table-cell;
     vertical-align: middle;
+    animation: fadein 3s;
+   -moz-animation: fadein 3s; /* Firefox */
+   -webkit-animation: fadein 3s; /* Safari and Chrome */
+   -o-animation: fadein 3s; /* Opera */
   }
   img{
     position:fixed;
     max-height: 200px;
     left: 0;
+    animation: 1s ease-out 0s 1 slideInFromLeft;
   }
   .clip-border {
     margin-top: 20px;

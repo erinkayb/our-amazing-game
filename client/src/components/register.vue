@@ -156,6 +156,10 @@ export default {
     z-index: 2;
     left: 200px;
     /* margin: 1em; */
+    animation: fadein 3s;
+   -moz-animation: fadein 3s; /* Firefox */
+   -webkit-animation: fadein 3s; /* Safari and Chrome */
+   -o-animation: fadein 3s; /* Opera */
 }
 .circle2 {
     position: absolute;
@@ -167,6 +171,10 @@ export default {
     bottom: 10%;
     right: 200px;
     z-index: 1;
+    animation: fadein 3s;
+   -moz-animation: fadein 3s; /* Firefox */
+   -webkit-animation: fadein 3s; /* Safari and Chrome */
+   -o-animation: fadein 3s; /* Opera */
 }
 .circle4 {
   position: absolute;
@@ -178,6 +186,10 @@ export default {
   bottom: 38%;
   right: 200px;
   z-index: 1;
+  animation: fadein 3s;
+ -moz-animation: fadein 3s; /* Firefox */
+ -webkit-animation: fadein 3s; /* Safari and Chrome */
+ -o-animation: fadein 3s; /* Opera */
 }
 .circle2:hover{
   background-color: #ef6c00;
@@ -198,9 +210,51 @@ img{
   position:fixed;
   max-height: 200px;
   left: 66%;
+  animation: 1s ease-out 0s 1 slideInFromLeft;
+
 }
 a{
   text-decoration: none;
   color:white;
+}
+@keyframes fadein {
+    from {
+        opacity:0;
+    }
+    to {
+        opacity:1;
+    }
+}
+@-moz-keyframes fadein { /* Firefox */
+    from {
+        opacity:0;
+    }
+    to {
+        opacity:1;
+    }
+}
+@-webkit-keyframes fadein { /* Safari and Chrome */
+    from {
+        opacity:0;
+    }
+    to {
+        opacity:1;
+    }
+}
+@-o-keyframes fadein { /* Opera */
+    from {
+        opacity:0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+@keyframes slideInFromLeft {
+0% {
+  transform: translateX(100%);
+}
+100% {
+  transform: translateX(0);
+}
 }
 </style>

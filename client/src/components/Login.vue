@@ -89,7 +89,46 @@ p{
   text-align: center;
   max-width: 400px;
 }
-
+@keyframes fadein {
+    from {
+        opacity:0;
+    }
+    to {
+        opacity:1;
+    }
+}
+@-moz-keyframes fadein { /* Firefox */
+    from {
+        opacity:0;
+    }
+    to {
+        opacity:1;
+    }
+}
+@-webkit-keyframes fadein { /* Safari and Chrome */
+    from {
+        opacity:0;
+    }
+    to {
+        opacity:1;
+    }
+}
+@-o-keyframes fadein { /* Opera */
+    from {
+        opacity:0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+@keyframes slideInFromLeft {
+0% {
+  transform: translateX(100%);
+}
+100% {
+  transform: translateX(0);
+}
+}
 .parallelogram-container{
   margin-top: 200px;
   width: 70%;
@@ -99,6 +138,10 @@ p{
   -webkit-box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
   -moz-box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
   box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
+  animation: fadein 3s;
+ -moz-animation: fadein 3s; /* Firefox */
+ -webkit-animation: fadein 3s; /* Safari and Chrome */
+ -o-animation: fadein 3s; /* Opera */
 }
 .parallelogram-container-two{
   position: absolute;
@@ -112,6 +155,10 @@ p{
   -webkit-box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
   -moz-box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
   box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
+  animation: fadein 3s;
+ -moz-animation: fadein 3s; /* Firefox */
+ -webkit-animation: fadein 3s; /* Safari and Chrome */
+ -o-animation: fadein 3s; /* Opera */
 }
 .parallelogram-container-three{
   position: absolute;
@@ -126,6 +173,10 @@ p{
   -webkit-box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
   -moz-box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
   box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
+  animation: fadein 3s;
+ -moz-animation: fadein 3s; /* Firefox */
+ -webkit-animation: fadein 3s; /* Safari and Chrome */
+ -o-animation: fadein 3s; /* Opera */
 }
 .parallelogram-container-two:hover{
   background-color: #e515e1;
@@ -137,6 +188,8 @@ img{
   position:fixed;
   max-height: 200px;
   left: 60px;
+  animation: 1s ease-out 0s 1 slideInFromLeft;
+
 }
 a{
   text-decoration: none;
