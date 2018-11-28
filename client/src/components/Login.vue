@@ -198,5 +198,6 @@ a{
 .regbtn{
     background-color: #0071bc;
     color:white;
+
 }
 </style>

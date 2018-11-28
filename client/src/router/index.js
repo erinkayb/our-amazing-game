@@ -8,6 +8,7 @@ import checkout from '@/components/checkout'
 import Paypal from '@/components/Paypal'
 import checkoutpaypal from '@/components/checkoutpaypal'
 
+
 Vue.use(Router)
 
 export default new Router({
