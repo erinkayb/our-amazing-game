@@ -19,6 +19,13 @@ class Player{
     this.bullets=[]
     this.World.add(this.ourWorld, this.b);
   }
+  reset(x,y){
+    this.dead=false
+    this.health=100
+    this.b =this.bodies.rectangle(x, y, 64, 64, {collisionFilter:{category:this.category,mask:defaultCategory|blueCategory|redCategory|greenCategory}})
+    this.b.label="player"
+    this.World.add(this.ourWorld, this.b);
+  }
   setDirX(x){
     this.dirX=x
   }

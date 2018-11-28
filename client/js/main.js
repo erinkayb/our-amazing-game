@@ -26,15 +26,18 @@
   let worldHeight =3072
   let windowWidth = render.options.width
   let windowHeight = render.options.height
+  let gameStart =false
+  let winner =false
+  let restart = false
+  let winnerId = null
+  let timeCounter = 10
+  let waiting="waiting for players"
   let centreScreen={x:windowWidth/2,y:windowHeight/2}
   var defaultCategory = 0x0001,
          redCategory = 0x0002,
          greenCategory = 0x0004,
          blueCategory = 0x0008,
          yellowCategory=0x0009
-  let score = 0
-  var dino = Bodies.rectangle(50, 500, 20, 40)
-  dino.label="dino"
   var ground = Bodies.rectangle(400, 610, 810, 60, { isStatic: true})
   var borderTop = Bodies.rectangle(0, 0, 3072, 60, { isStatic: true })
   var borderLeft = Bodies.rectangle(-1536, 1536, 60, 3072, { isStatic: true })
@@ -56,7 +59,7 @@
   var barrel3 = Bodies.circle(1280,425,70,{mass:500,collisionFilter:{category:defaultCategory}})
   var barrel4 = Bodies.circle(1150,425,70,{mass:500,collisionFilter:{category:defaultCategory}})
   // add all of the bodies to the world
-  World.add(ourWorld, [dino,ground,borderTop,borderLeft,borderRight,borderBottom,
+  World.add(ourWorld, [ground,borderTop,borderLeft,borderRight,borderBottom,
             sRb,sRb2,sRb3,
             house,house2,house3,house4,house5,house6,
             l1,l2,
@@ -108,16 +111,15 @@
   //players on client
   let socket = io();
   let players=[]
-  const player =new Player(Math.floor(Math.random()*1450)-1450,Math.floor(Math.random()*3000)+60,Bodies,Body,World,ourWorld,blueCategory,socket.id)
+  const player =new Player(Math.floor(Math.random()*3000)-1450,Math.floor(Math.random()*3000)+60,Bodies,Body,World,ourWorld,blueCategory,socket.id)
 
   socket.on('currentPlayers',(data)=>{
     player.id=data.id
       for (var p in data.players) {
         if (data.players[p].id!==player.id) {
           addNewPlayer(data.players[p].id,data.players[p].x,data.players[p].y)
+        }
       }
-  }
-
   })
   socket.on('newPosition',(pack)=>{
       updatePlayers(pack)
@@ -141,7 +143,17 @@
         }
       })
     }
-
+  })
+  socket.on('gameStart',()=>{
+    gameStart=true
+    timeCounter=10
+  })
+  socket.on('timeLeft',(data)=>{
+    timeCounter=data
+    waiting="Game Starts In "
+  })
+  socket.on('restart',(data)=>{
+      reset(data)
   })
   function addNewPlayer(id,x,y){
     players.push(new Player(x,y,Bodies,Body,World,ourWorld,blueCategory,id))
@@ -190,50 +202,43 @@
   // document.addEventListener('mouseout', mouseUp)
 
    render.canvas.addEventListener('click', (event) => {
-     if (!player.dead) {
-       player.shoot(event,blueCategory,centreScreen)
-       socket.emit('shoot',{dir:{x:event.x,y:event.y},center:centreScreen})
+     if (gameStart) {
+       if (!player.dead) {
+         player.shoot(event,blueCategory,centreScreen)
+         socket.emit('shoot',{dir:{x:event.x,y:event.y},center:centreScreen})
+       }
+        //laser.play()
      }
-
-      //laser.play()
     })
 
   document.addEventListener('keydown', (event) => {
     event.preventDefault()
   	if (event.keyCode==83) {
   		player.setDirY(1)
-      socket.emit('keyPress',{inputId:'down',state:true,pos:player.b.position,vel:player.b.velocity})
   	}
     if (event.keyCode==65) {
       player.setDirX(-1)
-      socket.emit('keyPress',{inputId:'left',state:true,pos:player.b.position,vel:player.b.velocity})
     }
     if (event.keyCode==87) {
       	player.setDirY(-1)
-        socket.emit('keyPress',{inputId:'up',state:true,pos:player.b.position,vel:player.b.velocity})
     }
     if (event.keyCode==68) {
   	   player.setDirX(1)
-       socket.emit('keyPress',{inputId:'right',state:true,pos:player.b.position,vel:player.b.velocity})
     }
   });
   document.addEventListener('keyup', (event) => {
     event.preventDefault()
   	if (event.keyCode==83) {
   			player.setDirY(0)
-        socket.emit('keyPress',{inputId:'down',state:false,pos:player.b.position,vel:{x:player.b.velocity.x,y:0}})
   	}
     if (event.keyCode==65) {
-    player.setDirX(0)
-    socket.emit('keyPress',{inputId:'left',state:false,pos:player.b.position,vel:{x:0,y:player.b.velocity.y}})
+        player.setDirX(0)
     }
     if (event.keyCode==87) {
       	player.setDirY(0)
-        socket.emit('keyPress',{inputId:'up',state:false,pos:player.b.position,vel:{x:player.b.velocity.x,y:0}})
     }
     if (event.keyCode==68) {
-  	   player.setDirX(0)
-       socket.emit('keyPress',{inputId:'right',state:false,pos:player.b.position,vel:{x:0,y:player.b.velocity.y}})
+  	    player.setDirX(0)
     }
   });
   Matter.Events.on(engine, 'collisionStart', function(event) {
@@ -257,8 +262,23 @@
   			}
   		})
   });
-  function reset(){
-  	score =0
+  function reset(data){
+    window.location.reload(false);
+    // restart= false
+    // winner =false
+    // gameStart=true
+    //   for (var i = players.length-1; i >=0; i--) {
+    //     World.remove(ourWorld,players[i].b)
+    //     players.splice(i,1)
+    //   }
+    //   World.remove(ourWorld,player.b)
+    //   player.reset(Math.floor(Math.random()*3000)-1450,Math.floor(Math.random()*3000)+60)
+    //   for (var p in data.players) {
+    //     if (data.players[p].id!==player.id) {
+    //       addNewPlayer(data.players[p].id,data.players[p].x,data.players[p].y)
+    //     }
+    //   }
+
   }
 
   (function run(t) {
@@ -269,38 +289,70 @@
   		}
       if (!player.dead) {
         Render.lookAt(render, player.pos, {x: WIDTH,y: HEIGHT});
+
       }else{
         Render.lookAt(render, {x:0,y:worldHeight/2}, {x: worldWidth/2,y: worldHeight/2});
       }
 
-
-      if (player.health<=0) {
-        World.remove(ourWorld,player.b)
-        player.dead=true
+      if (gameStart) {
+        if (!player.dead) {
+          player.update()
+          socket.emit('update',{inputId:'right',state:false,pos:player.b.position,vel:player.b.velocity,dead:player.dead})
+        }
+        for (var i = 0; i < players.length; i++) {
+          players[i].update()
+          if (players[i].dead) {
+            for (var j = players[i].bullets.length-1; j >=0; j--) {
+              World.remove(ourWorld,players[i].bullets[j].b)
+              players[i].bullets.splice(j,1)
+            }
+            World.remove(ourWorld,players[i].b)
+            players.splice(i,1)
+          }
+          if (players.length===0) {
+            console.log('i win');
+            winner=true
+            winnerId=player.id
+          }
+        }
+        if (player.health<=0&&!winner) {
+          if (!player.dead) {
+            waiting="waiting for players"
+            timeCounter=10
+            World.remove(ourWorld,player.b)
+            player.dead=true
+            socket.emit('update',{inputId:'right',state:false,pos:player.b.position,vel:player.b.velocity,dead:player.dead})
+          }
+          if(winner==false&&players.length===1) {
+            console.log(`${players[0].id} Wins!`);
+            winner=true
+            winnerId=players[0].id
+          }
+          context.fillStyle = "white";
+      		context.fillText("DEAD", window.innerWidth/2,window.innerHeight/2);
+      		context.fillText(`${waiting}`, window.innerWidth/2, window.innerHeight/2+50);
+        }
+        if (winner) {
+          context.fillStyle = "white";
+      		context.fillText("Winner!!", window.innerWidth/2,window.innerHeight/2-200);
+      		context.fillText(`${winnerId}`, window.innerWidth/2, window.innerHeight/2-150);
+          if(!restart){
+            restart=true
+            socket.emit('countdown')
+          }
+          if (restart) {
+            context.fillText(`Next Game In`, window.innerWidth/2, window.innerHeight/2-100);
+            context.fillText(`${timeCounter}`, window.innerWidth/2, window.innerHeight/2-50);
+          }
+        }
+      }else{
         context.fillStyle = "white";
-    		context.fillText("DEAD", window.innerWidth/2,window.innerHeight/2,);
-    		context.fillText("waiting for players", window.innerWidth/2, window.innerHeight/2+50,);
+        context.fillText(`${waiting}`, window.innerWidth/2, window.innerHeight/2+50);
+        context.fillText(`${timeCounter}`, window.innerWidth/2, window.innerHeight/2+100);
       }
   		context.fillStyle = "white";
   		context.fillText(`${player.health}%`, 50, 50);
-      for (var i = 0; i < players.length; i++) {
-        players[i].update()
-        if (players[i].dead) {
-          for (var j = players[i].bullets.length-1; j >=0; j--) {
-            World.remove(ourWorld,players[i].bullets[j].b)
-            players[i].bullets.splice(j,1)
-          }
-          World.remove(ourWorld,players[i].b)
-          players.splice(i,1)
-
-        }
-      }
-
-
-      player.update()
-      socket.emit('update',{inputId:'right',state:false,pos:player.b.position,vel:player.b.velocity,dead:player.dead})
-
 
       Engine.update(engine, 1000 / 60);
-  			window.requestAnimationFrame(run);
+  		window.requestAnimationFrame(run);
   })()

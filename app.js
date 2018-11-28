@@ -18,7 +18,7 @@ let PLAYER_LIST ={}
 let Player =(id)=>{
   let self={
     x:0,
-    y:0,
+    y:-3000,
     velX:0,
     velY:0,
     id:id,
@@ -30,7 +30,6 @@ let Player =(id)=>{
 io.sockets.on('connection', (socket)=>{
   let sessionID = socket.id
   console.log(`client connected ${socket.id}`)
-  console.log(`session id  ${sessionID}`)
 
 
   SOCKET_LIST[socket.id]=socket
@@ -38,7 +37,6 @@ io.sockets.on('connection', (socket)=>{
   PLAYER_LIST[socket.id]=player
 
   socket.emit('currentPlayers',  {players:PLAYER_LIST,id:sessionID})
-
   socket.on('update',(data)=>{
     player.x=data.pos.x
     player.y=data.pos.y
@@ -49,10 +47,37 @@ io.sockets.on('connection', (socket)=>{
   socket.on('shoot',(data)=>{
     io.emit('enemyFire',{dir:data.dir,id:sessionID,center:data.center})
   })
+  socket.on('countdown',()=>{
+    var timeleft = 10;
 
+     var resetTimer = setInterval(function(){
+     timeleft--;
+     io.emit('timeLeft', timeleft);
+
+     if(timeleft <= 0){
+         clearInterval(resetTimer);
+         io.emit('restart',{players:PLAYER_LIST})
+       }
+     },1000);
+  })
   //send players object to new player
   socket.broadcast.emit('newPlayer',PLAYER_LIST[socket.id])
+  console.log(Object.keys(SOCKET_LIST).length)
+  console.log(Object.keys(PLAYER_LIST).length)
+  if (Object.keys(PLAYER_LIST).length>=2) {
+    var timeleft = 10;
 
+     var downloadTimer = setInterval(function(){
+     timeleft--;
+     io.emit('timeLeft', timeleft);
+     console.log(timeleft);
+     if(timeleft <= 0){
+         clearInterval(downloadTimer);
+         io.emit('gameStart')
+       }
+     },1000);
+
+  }
   socket.on('disconnect',(socket)=>{
     console.log(`----client disconnected---- `);
     io.emit('disconnect', sessionID)
