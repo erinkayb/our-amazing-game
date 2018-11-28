@@ -72,41 +72,40 @@
   //disabeling gravity
   ourWorld.gravity.scale=0
 
-
-  // //-------AUDIO-------
-  // document.addEventListener('DOMContentLoaded', function(){
-  //     //song.play();
-  //   }, false)
-  // //player shoot
-  // const laser = new Howl({
-  //     volume: 0.5,
-  //     src: ['./js/laser.mp3']
-  //   });
-  // //player spawn
-  //  const spawn = new Howl({
-  //   volume: 0.5,
-  //   src: ['./js/spawn.mp3']
-  //  })
-  // //player dead
-  // const dead = new Howl({
-  //   volume: 0.8,
-  //   src: ['./js/killed.mp3']
-  //  })
-  // //client connects
-  // const connect = new Howl({
-  //   volume: 0.6,
-  //   src: ['./js/connect.mp3']
-  //  })
-  // //client disconnect
-  // const disconnect = new Howl({
-  //   volume: 0.6,
-  //   src: ['./js/disconnect.mp3']
-  //  })
-  // //background song
-  // const song = new Howl({
-  //     volume: 0.1,
-  //     src: ['./js/song_compressed.mp3'],
-  //  })
+  //-------AUDIO-------
+  document.addEventListener('DOMContentLoaded', function(){
+      //song.play();
+    }, false)
+  //player shoot
+  const laser = new Howl({
+      volume: 0.5,
+      src: ['./js/laser.mp3']
+    });
+  //player spawn
+   const spawn = new Howl({
+    volume: 0.5,
+    src: ['./js/spawn.mp3']
+   })
+  //player dead
+  const dead = new Howl({
+    volume: 0.8,
+    src: ['./js/killed.mp3']
+   })
+  //client connects
+  const connect = new Howl({
+    volume: 0.6,
+    src: ['./js/connect.mp3']
+   })
+  //client disconnect
+  const disconnect = new Howl({
+    volume: 0.6,
+    src: ['./js/disconnect.mp3']
+   })
+  //background song
+  const song = new Howl({
+      volume: 0.1,
+      src: ['./js/song_compressed.mp3'],
+   })
 
   //players on client
   let socket = io();
@@ -125,21 +124,22 @@
       updatePlayers(pack)
   })
   socket.on('disconnect',(id)=>{
-
       deletePlayer(id)
+      disconnect.play();
       console.log(`disconnecting: ${id}`)
   })
 
   socket.on('newPlayer',(id)=>{
     addNewPlayer(id.id,id.x,id.y)
     console.log('NEW PLAYER:',id.id);
-    //connect.play()
+    connect.play()
   })
   socket.on('enemyFire',(data)=>{
     if (data.id !==player.id) {
       players.forEach(p=>{
         if (data.id==p.id) {
           p.shoot(data.dir,blueCategory,data.center)
+          laser.play();
         }
       })
     }
@@ -207,7 +207,7 @@
          player.shoot(event,blueCategory,centreScreen)
          socket.emit('shoot',{dir:{x:event.x,y:event.y},center:centreScreen})
        }
-        //laser.play()
+        laser.play()
      }
     })
 
@@ -262,6 +262,11 @@
   			}
   		})
   });
+
+  function deadExplosion(a,b,c,d){
+     World.add(ourWorld, [a,b,c,d]);
+  } 
+
   function reset(data){
     window.location.reload(false);
     // restart= false
@@ -306,7 +311,11 @@
               World.remove(ourWorld,players[i].bullets[j].b)
               players[i].bullets.splice(j,1)
             }
+            dead.play();
+            var explosion1 = Bodies.rectangle(players[i].b.position.x, players[i].b.position.y, 15,15, {mass:100})
+            socket.emit('update',{inputId:'right',state:false,pos:player.b.position,vel:player.b.velocity,dead:player.dead})
             World.remove(ourWorld,players[i].b)
+            deadExplosion(explosion1);
             players.splice(i,1)
           }
           if (players.length===0) {
@@ -321,7 +330,18 @@
             timeCounter=10
             World.remove(ourWorld,player.b)
             player.dead=true
+            //dead sounds / particles
+            dead.play();
+            var explosion1 = Bodies.rectangle(player.pos.x, player.pos.y, 15,15, {mass:100})
+            var explosion2 = Bodies.rectangle(player.pos.x, player.pos.y, 15,15, {mass:100})
+            var explosion3 = Bodies.rectangle(player.pos.x, player.pos.y, 15,15, {mass:100})
+            var explosion4 = Bodies.rectangle(player.pos.x, player.pos.y, 15,15, {mass:100})
             socket.emit('update',{inputId:'right',state:false,pos:player.b.position,vel:player.b.velocity,dead:player.dead})
+            deadExplosion(explosion1,explosion2,explosion3,explosion4);
+            Body.applyForce(explosion1, {x: player.pos.x, y: player.pos.y}, {x:1, y:0})
+            Body.applyForce(explosion2, {x: player.pos.x, y: player.pos.y}, {x:0.5, y:1})
+            Body.applyForce(explosion3, {x: player.pos.x, y: player.pos.y}, {x:-0.5, y:-1})
+            Body.applyForce(explosion4, {x: player.pos.x, y: player.pos.y}, {x:-1, y:0})
           }
           if(winner==false&&players.length===1) {
             console.log(`${players[0].id} Wins!`);
