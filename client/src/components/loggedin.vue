@@ -34,7 +34,8 @@
         </div>
       </div>
     </div>
-      <a href="#">
+      <a :href="'http://localhost:3000'" target="_blank">
+        {{ url }}
         <div class='square-box'>
         <div class='square-content'>
           <div>

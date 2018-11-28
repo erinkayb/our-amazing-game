@@ -2,6 +2,7 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
 import App from './App'
+// import Game from './game'
 import router from './router'
 import Vuetify from 'vuetify'
 import { sync } from 'vuex-router-sync'
@@ -19,5 +20,15 @@ new Vue({
   router,
   store,
   components: { App },
-  template: '<App/>'
+  template: '<App/>',
+  data: {
+    htmlTexts: '../game.html'
+  }
 })
+// new Vue({
+//   el: '#game',
+//   router,
+//   store,
+//   components: { Game },
+//   template: '<Game/>'
+// })
