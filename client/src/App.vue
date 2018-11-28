@@ -24,13 +24,20 @@ export default {
 </script>
 
 <style>
+
+body{
+  margin: auto;
+}
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  @import url('https://fonts.googleapis.com/css?family=Orbitron:400,700');
+  font-family: 'Orbitron', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #263238;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  background-image: url(https://res.cloudinary.com/erinkayb/image/upload/v1543239154/overlayblack.png);
+  background-position: center; /* Center the image */
+  background-repeat: no-repeat; /* Do not repeat the image */
+  background-size: cover;
 }
 </style>
