@@ -4,7 +4,6 @@
       <nav-header class="navHeader"></nav-header>
       <main>
         <v-container fluid>
-        
           <router-view/>
         </v-container>
       </main>

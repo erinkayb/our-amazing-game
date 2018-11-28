@@ -9,7 +9,8 @@
 #333 gray-->
 
   <div class='playgame'>
-    <a href="#">
+    <a :href="'http://localhost:3000'" target="_blank">
+      {{ url }}
       <div>
         <span class='gametext'>Play <br/> Game</span>
       </div>
