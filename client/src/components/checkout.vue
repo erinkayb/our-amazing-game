@@ -27,6 +27,13 @@
                <paypal :amount="amount"></paypal>
               </v-flex>
             </div>
+            <a @click="navigateTo({
+            name: 'loggedin',
+            params: {
+              userID: users.id
+            }
+            })">
+        <strong> Back </strong></a>
           </div>
       </v-flex>
     </v-layout>
@@ -34,11 +41,18 @@
 </template>
 <script>
 import Paypal from './Paypal'
+import userservice from '@/services/userservice'
 export default {
   name: 'checkout',
   data () {
     return {
+      users: [],
       amount:5
+    }
+  },
+  methods: {
+    navigateTo (route) {
+      this.$router.push(route)
     }
   },
    components: {
@@ -51,5 +65,8 @@ export default {
     max-width: 100px;
     text-align: center;
     display: inline-block;
+  }
+  a {
+    font-size: 20px;
   }
 </style>

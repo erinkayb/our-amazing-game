@@ -3,10 +3,18 @@
     <div class="logo">
       <img src="https://res.cloudinary.com/erinkayb/image/upload/v1543335773/radwarsOrange.png" alt="">
     </div>
-    <v-layout row wrap>
+    <v-layout>
 <!-- #e515e1 pink
 #0071bc blue
 #333 gray-->
+
+  <div class='playgame'>
+    <a href="#">
+      <div>
+        <span class='gametext'>Play <br/> Game</span>
+      </div>
+    </a>
+  </div>
 
       <div class="wrap">
     		<div class="clip-block">
@@ -83,6 +91,7 @@ li {
 }
 a {
   color: #42b983;
+  text-decoration: none;
 }
 
 p {
@@ -92,7 +101,27 @@ p {
   color: black;
   font-size: 18px;
 }
-
+.playgame{
+  /* writing-mode: vertical-rl;
+  text-orientation: upright; */
+  color: white;
+  border-radius: 50%;
+  padding: 3%;
+  background-color: #ef6c00;
+  top:37%;
+  left: 80%;
+  position: absolute;
+  font-size: 35px;
+  animation: fadein 3s;
+ -moz-animation: fadein 3s; /* Firefox */
+ -webkit-animation: fadein 3s; /* Safari and Chrome */
+ -o-animation: fadein 3s; /* Opera */
+}
+.playgame:hover {
+  background: #0071bc;
+  -webkit-transition: all 0.25s ease-in;
+  transition: all 0.25s ease-in;
+}
 .wrap {
   color: #222;
   font-size: 40px;
@@ -222,6 +251,7 @@ a.clip-each:hover {
     -webkit-transform: translateY(-50%) translateX(-50%);
     transform: translateY(-50%) translateX(-50%);
   }
+}
   @keyframes slideInFromLeft {
   0% {
     transform: translateX(100%);
@@ -262,6 +292,7 @@ a.clip-each:hover {
           opacity: 1;
       }
   }
+
   .clip-block {
     display: table-cell;
     vertical-align: middle;
@@ -279,6 +310,9 @@ a.clip-each:hover {
   .clip-border {
     margin-top: 20px;
   }
-}
+  .gametext{
+    color: white;
+  }
+
 
 </style>
