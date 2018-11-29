@@ -94,6 +94,18 @@
         {x:100,y:0},
         {x:0,y:0}]
 var terrain = Bodies.fromVertices(0,1500, vert );
+var geo = [
+    {x:0,y:50},
+    {x:50,y:0},
+    {x:100,y:0},
+    {x:150,y:50},
+    {x:100,y:100},
+    {x:125,y:50},
+    {x:80,y:10},
+    {x:60,y:10},
+    {x:25,y:50},
+    {x:50,y:100}]
+var wars = Bodies.fromVertices(0,1500, geo );
   //let vert =Bodies.fromVertices(0, 1500, [[]])
   // add all of the bodies to the world
   World.add(ourWorld, [ground,borderTop,borderLeft,borderRight,borderBottom,
@@ -101,11 +113,12 @@ var terrain = Bodies.fromVertices(0,1500, vert );
             house,house2,house3,house4,house5,house6,
             l1,l2,
             barrel,barrel2,barrel3,barrel4,
-            polgon,polgon1,polgon2,polgon3,polgon4,polgon5,
-            trap,
-            star,
-            con,
-            terrain
+            //polgon,polgon1,polgon2,polgon3,polgon4,polgon5,
+            //trap,
+            //star,
+            //con,
+            //terrain,
+            //wars
 
           ]);
   // run the engine
@@ -291,7 +304,7 @@ var terrain = Bodies.fromVertices(0,1500, vert );
               pair.bodyA.label='stop'
               if (pair.bodyB.label==='player') {
                 if (pair.bodyB.id===player.b.id) {
-                  player.health-=50
+                  player.health-=10
                 }
               }
         }
@@ -299,7 +312,7 @@ var terrain = Bodies.fromVertices(0,1500, vert );
             pair.bodyB.label='stop'
             if (pair.bodyA.label==='player') {
               if (pair.bodyA.id===player.b.id) {
-                player.health-=50
+                player.health-=10
               }
             }
   			}
