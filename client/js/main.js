@@ -58,12 +58,55 @@
   var barrel2 = Bodies.circle(1100,300,70,{mass:500,collisionFilter:{category:defaultCategory}})
   var barrel3 = Bodies.circle(1280,425,70,{mass:500,collisionFilter:{category:defaultCategory}})
   var barrel4 = Bodies.circle(1150,425,70,{mass:500,collisionFilter:{category:defaultCategory}})
+
+  var polgon =Bodies.polygon(0, 1500, 5, 40)
+  var polgon1 =Bodies.polygon(0, 1500, 8, 40)
+  var polgon2 =Bodies.polygon(0, 1500, 3, 40)
+  var polgon3 =Bodies.polygon(0, 1500, 6, 40)
+  var polgon4 =Bodies.polygon(0, 1500, 7, 40)
+  var polgon5 =Bodies.polygon(0, 1500, 1, 40)
+  let trap =Bodies.trapezoid(0, 1500, 40, 70, 1)
+  var vertices = [{x : 50,y : 0},{x : 63,y : 38},{x : 100,y : 38},{x : 69,y : 59},
+                  {x : 82 ,y : 100},{x : 50,y : 75},{x : 18,y : 100},{x : 31,y : 59},
+                  {x : 0,y : 38},{x : 37,y : 38}];
+
+  var concavePolygon = [
+  {x: 10,y:   20},
+  {x: 10,y:   10},
+  {x:  10,y:   0},
+  {x:  10,y:   10},
+  {x:5,y: 5}
+  ];
+    var star = Bodies.fromVertices(0, 1500, vertices,true);
+    var con = Bodies.fromVertices(0, 1000, concavePolygon,true);
+    var vert = [
+        {x:0,y:0},
+        {x:10,y:100},
+        {x:20,y:120},
+        {x:30,y:60},
+        {x:40,y:100},
+        {x:50,y:200},
+        {x:60,y:100},
+        {x:70,y:200},
+        {x:80,y:180},
+        {x:90,y:100},
+        {x:100,y:180},
+        {x:100,y:0},
+        {x:0,y:0}]
+var terrain = Bodies.fromVertices(0,1500, vert );
+  //let vert =Bodies.fromVertices(0, 1500, [[]])
   // add all of the bodies to the world
   World.add(ourWorld, [ground,borderTop,borderLeft,borderRight,borderBottom,
             sRb,sRb2,sRb3,
             house,house2,house3,house4,house5,house6,
             l1,l2,
-            barrel,barrel2,barrel3,barrel4
+            barrel,barrel2,barrel3,barrel4,
+            polgon,polgon1,polgon2,polgon3,polgon4,polgon5,
+            trap,
+            star,
+            con,
+            terrain
+
           ]);
   // run the engine
   Engine.run(engine);
@@ -263,9 +306,17 @@
   		})
   });
 
-  function deadExplosion(a,b,c,d){
+  function deadExplosion(pos){
+    let a = Bodies.rectangle(pos.x, pos.y, 15,15, {mass:1})
+    let b = Bodies.rectangle(pos.x, pos.y, 15,15, {mass:1})
+    let c = Bodies.rectangle(pos.x, pos.y, 15,15, {mass:1})
+    let d = Bodies.rectangle(pos.x, pos.y, 15,15, {mass:1})
      World.add(ourWorld, [a,b,c,d]);
-  } 
+     Body.applyForce(a, {x: pos.x, y: pos.y}, {x:0.01, y:0})
+     Body.applyForce(b, {x: pos.x, y: pos.y}, {x:0.05, y:0.01})
+     Body.applyForce(c, {x: pos.x, y: pos.y}, {x:-0.05, y:-0.01})
+     Body.applyForce(d, {x: pos.x, y: pos.y}, {x:-0.01, y:0})
+  }
 
   function reset(data){
     window.location.reload(false);
@@ -312,10 +363,10 @@
               players[i].bullets.splice(j,1)
             }
             dead.play();
-            var explosion1 = Bodies.rectangle(players[i].b.position.x, players[i].b.position.y, 15,15, {mass:100})
-            socket.emit('update',{inputId:'right',state:false,pos:player.b.position,vel:player.b.velocity,dead:player.dead})
+            //var explosion1 = Bodies.rectangle(players[i].b.position.x, players[i].b.position.y, 15,15, {mass:100})
+            //socket.emit('update',{inputId:'right',state:false,pos:player.b.position,vel:player.b.velocity,dead:player.dead})
             World.remove(ourWorld,players[i].b)
-            deadExplosion(explosion1);
+            deadExplosion(players[i].b.position);
             players.splice(i,1)
           }
           if (players.length===0) {
@@ -332,16 +383,8 @@
             player.dead=true
             //dead sounds / particles
             dead.play();
-            var explosion1 = Bodies.rectangle(player.pos.x, player.pos.y, 15,15, {mass:100})
-            var explosion2 = Bodies.rectangle(player.pos.x, player.pos.y, 15,15, {mass:100})
-            var explosion3 = Bodies.rectangle(player.pos.x, player.pos.y, 15,15, {mass:100})
-            var explosion4 = Bodies.rectangle(player.pos.x, player.pos.y, 15,15, {mass:100})
             socket.emit('update',{inputId:'right',state:false,pos:player.b.position,vel:player.b.velocity,dead:player.dead})
-            deadExplosion(explosion1,explosion2,explosion3,explosion4);
-            Body.applyForce(explosion1, {x: player.pos.x, y: player.pos.y}, {x:1, y:0})
-            Body.applyForce(explosion2, {x: player.pos.x, y: player.pos.y}, {x:0.5, y:1})
-            Body.applyForce(explosion3, {x: player.pos.x, y: player.pos.y}, {x:-0.5, y:-1})
-            Body.applyForce(explosion4, {x: player.pos.x, y: player.pos.y}, {x:-1, y:0})
+            deadExplosion(player.pos)
           }
           if(winner==false&&players.length===1) {
             console.log(`${players[0].id} Wins!`);
